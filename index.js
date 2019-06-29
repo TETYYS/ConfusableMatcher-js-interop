@@ -49,15 +49,11 @@ class ConfusableMatcher {
 			let keyUtf8 = this.toUtf8(InputMap[x][0]);
 			ref.writePointer(cmKV, 0, keyUtf8);
 
-			try {
-				let valUtf8 = this.toUtf8(InputMap[x][1]);
-				ref.writePointer(cmKV, this.PtrSize, valUtf8);
+			let valUtf8 = this.toUtf8(InputMap[x][1]);
+			ref.writePointer(cmKV, this.PtrSize, valUtf8);
 
-				cmKV.copy(buffer, bufferOffset);
-				bufferOffset += this.CMKV.size;
-			} catch (ex) {
-				debugger;
-			}
+			cmKV.copy(buffer, bufferOffset);
+			bufferOffset += this.CMKV.size;
 		}
 
 		let cmMap = new this.CMMap({ Kv: buffer, Size: InputMap.length });
@@ -149,11 +145,7 @@ class ConfusableMatcher {
 		let keyUtf8 = this.toUtf8(Key);
 		let valUtf8 = this.toUtf8(Value);
 
-		try {
-			return this.libconfusablematcher.RemoveMapping(this.Matcher, keyUtf8, valUtf8) == 1;
-		} catch (err) {
-			debugger;
-		}
+		return this.libconfusablematcher.RemoveMapping(this.Matcher, keyUtf8, valUtf8) == 1;
 	}
 }
 
