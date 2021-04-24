@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+    confusablematcher-js-interop-build-clean:
+        image: moderatex/confusablematcher-js-interop-build-runner:latest
+        container_name: confusablematcher-js-interop-build-runner
+        build:
+            context: .
+            target: development
+        command: 'sh -c "yarn start'
+        volumes:
+            - ./src:/usr/moderatex/src
+
+    confusablematcher-js-interop-test-clean:
+        image: moderatex/confusablematcher-js-interop-test-runner:latest
+        container_name: confusablematcher-js-interop-test-runner
+        build:
+            context: .
+            target: development
+        command: 'sh -c "yarn run test --verbose --watchAll'
+        volumes:
+            - ./src:/usr/moderatex/src
