@@ -1,40 +1,42 @@
-declare interface IConfusableMatcherNapiInterop {
-    new (map: string[][], skip: string[], addDefaultValues: boolean): ConfusableMatcherNapiInterop;
+export type Mapping = [key: string, value: string];
+
+export enum EReturnStatus {
+    MATCH = 0,
+    NO_MATCH = 1,
+    STATE_PUSH_LIMIT_EXCEEDED = 2,
+    WORD_BOUNDARY_FAIL_START = 3,
+    WORD_BOUNDARY_FAIL_END = 4,
 }
 
-export interface ICMView {
-    Index: number;
-    Length: number;
+export interface IResult {
+    size: number;
+    start: number;
+    status: EReturnStatus;
 }
 
-export type ICMMapping = [key: string, value: string];
-
-export enum ECMFailCode {
-    NO_MATCH = -1,
-    EXCEEDED_STATE_PUSH_LIMIT = -2,
-    WORD_BOUNDARY_FAIL_START = -3,
-    WORD_BOUNDARY_FAIL_END = -4,
+export interface IIndexOfOptions {
+    matchRepeating?: boolean;
+    startIndex?: number;
+    startFromEnd?: boolean;
+    statePushLimit?: number;
+    matchOnWordBoundary?: boolean;
 }
 
-export interface ICMOptions {
-    matchRepeating: boolean;
-    startIndex: number;
-    startFromEnd: boolean;
-    statePushLimit: number;
-    matchOnWordBoundary: boolean;
+export declare class ConfusableMatcherInstance {
+    getKeyMappings(key: string): string[];
+    indexOf(input: string, needle: string, options?: IIndexOfOptions): IResult;
 }
 
-export declare abstract class ConfusableMatcherNapiInterop {
-    GetKeyMappings(key: string): string[];
-    IndexOf(input: string, needle: string, options: ICMOptions): ICMView;
+interface IConfusableMatcherProptotype {
+    new (maps?: string[][], skips?: string[], addDefaultValues?: boolean): ConfusableMatcherInstance;
 }
 
-declare interface IAddonExports {
-    ConfusableMatcherNapiInterop: IConfusableMatcherNapiInterop;
+interface IAddonExports {
+    ConfusableMatcher: IConfusableMatcherProptotype;
 }
 
-// eslint-disable-next-line  @typescript-eslint/naming-convention
-let ConfusableMatcherNapi: IAddonExports;
+// eslint-disable-next-line import/no-mutable-exports
+let classExport: IConfusableMatcherProptotype;
 
 const ADDON_PATHS = [
     '../Release/confusablematcher-js-interop-native',
@@ -42,7 +44,8 @@ const ADDON_PATHS = [
 ];
 for (const path of ADDON_PATHS) {
     try {
-        ConfusableMatcherNapi = require(path) as IAddonExports;
+        const module = require(path) as IAddonExports;
+        classExport = module.ConfusableMatcher;
         break;
     } catch (e) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -52,5 +55,6 @@ for (const path of ADDON_PATHS) {
     }
 }
 
+export { classExport as ConfusableMatcher };
 // eslint-disable-next-line import/no-default-export
-export default ConfusableMatcherNapi!;
+export default classExport!;
