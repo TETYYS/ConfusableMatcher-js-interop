@@ -1,6 +1,6 @@
 {
     "targets": [
-                {
+        {
             "target_name": "confusable_matcher_cmake",
             "type": "none",
             "actions": [
