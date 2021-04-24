@@ -2,15 +2,15 @@
     "version": "0.1",
     "language": "en",
     "ignorePaths": [
-        "./coverage",
-        "./node_modules",
-        "./build",
-        "./.github/workflows/**",
-        "./src/ConfusableMatcher",
-        "./CHANGELOG.md",
-        "./yarn.lock",
-        "./.eslintrc.js",
-        "./**/*.json"
+        "coverage/**",
+        "node_modules/**",
+        "build/**",
+        ".github/workflows/**",
+        "src/ConfusableMatcher/**",
+        "CHANGELOG.md",
+        "yarn.lock",
+        ".*rc.js",
+        "**/*.json"
     ],
     "dictionaries": ["typescript", "softwareTerms", "node", "en_US", "npm", "misc", "filetypes"],
     "ignoreRegExpList": [
