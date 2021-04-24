@@ -1,7 +1,7 @@
 {
     "name": "confusablematcher-js-interop",
     "description": "TypeScript NAPI Interop for ConfusableMatcher.",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "license": "MIT",
     "contributors": [
         "TETYYS",
@@ -34,13 +34,11 @@
         "install": "echo \"Preventing Build on Install\" && exit 0",
         "prebuild": "./scripts/prebuild.sh",
         "build": "tsc -b tsconfig.build.json",
-        "build:clean": "docker-compose up confusablematcher-js-interop-build-clean",
         "clean": "tsc -b tsconfig.build.json --clean",
         "postclean": "rimraf build coverage src/ConfusableMatcher/CMakeBuild",
         "test": "jest --verbose --passWithNoTests",
         "test:watch": "yarn test --watchAll",
         "test:coverage": "yarn test --coverage",
-        "test:clean": "docker-compose up confusablematcher-js-interop-test-clean",
         "benchmark": "ts-node ./src/benchmark.ts",
         "benchmark:watch": "ts-node-dev --cls --rs --inspect --project tsconfig.build.json --respawn ./src/benchmark.ts",
         "typecheck": "tsc -p tsconfig.build.json --noEmit",
