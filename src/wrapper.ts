@@ -62,16 +62,14 @@ export class ConfusableMatcher {
             }
         }
 
-        this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop([], [], false);
-        for (const [key, value] of this._map) {
-            this._instance.AddMapping(key, value, true);
-        }
-        for (const skip of this._skips.values()) {
-            this._instance.AddSkip(skip);
-        }
+        this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop(
+            [...this._map.values()],
+            [...this._skips.values()],
+            false
+        );
     }
 
-    public addMapping(key: string, value: string, checkValueDuplicate = true): void {
+    public addMapping(key: string, value: string): void {
         if (key.length === 0) {
             throw new Error('Key provided is empty.');
         }
@@ -88,15 +86,17 @@ export class ConfusableMatcher {
         key = key.toLocaleUpperCase();
         value = value.toLocaleUpperCase();
 
-        const didAdd = this._instance.AddMapping(key, value, checkValueDuplicate);
-        if (didAdd) {
-            this._map.push([key, value]);
-        }
+        this._map.push([key, value]);
+        this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop(
+            this._map,
+            [...this._skips.values()],
+            false
+        );
     }
 
-    public addMappings(mappings: ICMMapping[], checkValueDuplicate = true): void {
+    public addMappings(mappings: ICMMapping[]): void {
         for (const [key, value] of mappings) {
-            this.addMapping(key, value, checkValueDuplicate);
+            this.addMapping(key, value);
         }
     }
 
@@ -154,13 +154,11 @@ export class ConfusableMatcher {
         }
 
         if (didRemove) {
-            this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop([], [], false);
-            for (const [key, value] of this._map) {
-                this._instance.AddMapping(key, value, true);
-            }
-            for (const skip of this._skips.values()) {
-                this._instance.AddSkip(skip);
-            }
+            this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop(
+                this._map,
+                [...this._skips.values()],
+                false
+            );
         } else {
             throw new Error('Mapping does not exist.');
         }
@@ -210,13 +208,11 @@ export class ConfusableMatcher {
         }
 
         if (didRemoveAny) {
-            this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop([], [], false);
-            for (const [key, value] of this._map) {
-                this._instance.AddMapping(key, value, true);
-            }
-            for (const skip of this._skips.values()) {
-                this._instance.AddSkip(skip);
-            }
+            this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop(
+                this._map,
+                [...this._skips.values()],
+                false
+            );
         } else {
             throw new Error('A mapping does not exist.');
         }
@@ -251,12 +247,12 @@ export class ConfusableMatcher {
 
         skip = skip.toLocaleUpperCase();
 
-        const didAdd = this._instance.AddSkip(skip);
-        if (didAdd) {
-            this._skips.add(skip);
-        } else {
-            throw new Error('Skip does not exist.');
-        }
+        this._skips.add(skip);
+        this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop(
+            this._map,
+            [...this._skips.values()],
+            false
+        );
     }
 
     public addSkips(skips: string[]): void {
@@ -277,13 +273,11 @@ export class ConfusableMatcher {
 
         const didRemove = this._skips.delete(skip);
         if (didRemove) {
-            this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop([], [], false);
-            for (const [key, value] of this._map) {
-                this._instance.AddMapping(key, value, true);
-            }
-            for (const skip of this._skips.values()) {
-                this._instance.AddSkip(skip);
-            }
+            this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop(
+                this._map,
+                [...this._skips.values()],
+                false
+            );
         } else {
             throw new Error('Skip does not exist.');
         }
@@ -314,13 +308,11 @@ export class ConfusableMatcher {
         }
 
         if (didRemoveAny) {
-            this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop([], [], false);
-            for (const [key, value] of this._map) {
-                this._instance.AddMapping(key, value, true);
-            }
-            for (const skip of this._skips.values()) {
-                this._instance.AddSkip(skip);
-            }
+            this._instance = new ConfusableMatcherInterop.ConfusableMatcherNapiInterop(
+                this._map,
+                [...this._skips.values()],
+                false
+            );
         } else {
             throw new Error('An skip does not exist.');
         }

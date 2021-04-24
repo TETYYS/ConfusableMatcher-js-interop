@@ -25,8 +25,6 @@ export interface ICMOptions {
 }
 
 export declare abstract class ConfusableMatcherNapiInterop {
-    AddMapping(key: string, value: string, checkValueDuplicate: boolean): boolean;
-    AddSkip(value: string): boolean;
     GetKeyMappings(key: string): string[];
     IndexOf(input: string, needle: string, options: ICMOptions): ICMView;
 }

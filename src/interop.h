@@ -9,8 +9,6 @@ public:
     ConfusableMatcherNapiInterop(const Napi::CallbackInfo &);
     ~ConfusableMatcherNapiInterop();
 
-    Napi::Value AddMapping(const Napi::CallbackInfo &);
-    Napi::Value AddSkip(const Napi::CallbackInfo &);
     Napi::Value GetKeyMappings(const Napi::CallbackInfo &);
     Napi::Value IndexOf(const Napi::CallbackInfo &);
 

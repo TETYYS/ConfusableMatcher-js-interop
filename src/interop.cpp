@@ -32,24 +32,6 @@ ConfusableMatcherNapiInterop::~ConfusableMatcherNapiInterop()
     delete this->_instance;
 }
 
-Napi::Value ConfusableMatcherNapiInterop::AddMapping(const Napi::CallbackInfo &info)
-{
-    Napi::Env env = info.Env();
-    Napi::String Key = info[0].As<Napi::String>();
-    Napi::String Value = info[1].As<Napi::String>();
-    Napi::Boolean CheckValueDuplicate = info[2].As<Napi::Boolean>();
-    bool result = this->_instance->AddMapping(Key.Utf8Value(), Value.Utf8Value(), CheckValueDuplicate.ToBoolean());
-    return Napi::Boolean::New(env, result);
-}
-
-Napi::Value ConfusableMatcherNapiInterop::AddSkip(const Napi::CallbackInfo &info)
-{
-    Napi::Env env = info.Env();
-    Napi::String In = info[0].As<Napi::String>();
-    bool result = this->_instance->AddSkip(In.Utf8Value());
-    return Napi::Boolean::New(env, result);
-}
-
 Napi::Value ConfusableMatcherNapiInterop::GetKeyMappings(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
@@ -107,8 +89,6 @@ Napi::Function ConfusableMatcherNapiInterop::GetClass(Napi::Env env)
         env,
         "ConfusableMatcherNapiInterop",
         {
-            ConfusableMatcherNapiInterop::InstanceMethod("AddMapping", &ConfusableMatcherNapiInterop::AddMapping),
-            ConfusableMatcherNapiInterop::InstanceMethod("AddSkip", &ConfusableMatcherNapiInterop::AddSkip),
             ConfusableMatcherNapiInterop::InstanceMethod("GetKeyMappings", &ConfusableMatcherNapiInterop::GetKeyMappings),
             ConfusableMatcherNapiInterop::InstanceMethod("IndexOf", &ConfusableMatcherNapiInterop::IndexOf),
         });
