@@ -84,7 +84,7 @@ Napi::Value ConfusableMatcherNapiInterop::IndexOf(const Napi::CallbackInfo &info
     Napi::Number StatePushLimit = Options.Get("statePushLimit").As<Napi::Number>();
     Napi::Boolean MatchOnWordBoundary = Options.Get("matchOnWordBoundary").As<Napi::Boolean>();
 
-    CMOptions opts;
+    CMOptions opts = {};
     opts.MatchRepeating = MatchRepeating.ToBoolean();
     opts.StartIndex = StartIndex.ToNumber().Int32Value();
     opts.StartFromEnd = StartFromEnd.ToBoolean();
