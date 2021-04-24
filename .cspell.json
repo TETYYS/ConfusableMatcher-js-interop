@@ -1,0 +1,33 @@
+{
+    "version": "0.1",
+    "language": "en",
+    "ignorePaths": [
+        "./coverage",
+        "./node_modules",
+        "./build",
+        "./.github/workflows/**",
+        "./src/ConfusableMatcher",
+        "./CHANGELOG.md",
+        "./yarn.lock",
+        "./.eslintrc.js",
+        "./**/*.json"
+    ],
+    "dictionaries": ["typescript", "softwareTerms", "node", "en_US", "npm", "misc", "filetypes"],
+    "ignoreRegExpList": [
+        "/```[\\w\\W]*?```/",
+        "/~~~[\\w\\W]*?~~~/",
+        "/``[\\w\\W]*?``/",
+        "/`[^`]*`/",
+        "/\\.\\/docs\\/rules\\/[^.]*.md/",
+        "\\(#.+?\\)",
+        "/\\S+\\.(?:com|net|org)/"
+    ],
+    "words": ["TETYYS"],
+    "overrides": [
+        {
+            "filename": "**/*.{ts,js}",
+            "ignoreRegExpList": ["/@[a-z]+/", "/#(end)?region/"],
+            "includeRegExpList": ["/\\/\\*[\\s\\S]*?\\*\\/|([^\\\\:]|^)\\/\\/.*$/", "/(\\/\\/[^\\n\\r]*[\\n\\r]+)/"]
+        }
+    ]
+}
