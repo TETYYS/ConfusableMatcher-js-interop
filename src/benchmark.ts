@@ -12,5 +12,5 @@ suite.add('ConfusableMatcher#indexOf', () =>
     })
 );
 suite.on('cycle', (event: Benchmark.Event) => console.log(event.target.toString()));
-suite.on('complete', () => console.log(`Fastest is ${suite.filter('fastest').map((b: Benchmark) => b.name)}`));
+console.log('Running benchmark...');
 suite.run({ async: true });
