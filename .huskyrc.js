@@ -1,5 +1,6 @@
+/* cSpell: disable */
 module.exports = {
     hooks: {
-        'pre-push': '. ./scripts/prepush.sh',
+        'pre-commit': 'yarn lint-staged -c .lint-stagedrc.js',
     },
 };
