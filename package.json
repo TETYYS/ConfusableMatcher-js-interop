@@ -43,7 +43,7 @@
         "test:clean": "docker-compose up confusablematcher-js-interop-test-clean",
         "benchmark": "ts-node ./src/benchmark.ts",
         "benchmark:watch": "ts-node-dev --cls --rs --inspect --project tsconfig.build.json --respawn ./src/benchmark.ts",
-        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "typecheck": "tsc -p tsconfig.build.json --noEmit",
         "lint": "eslint --cache ./**/*.{js,ts}",
         "lint:fix": "yarn lint --fix",
         "format": "prettier --list-different ./**/*.{js,ts,json,md,yaml}",
