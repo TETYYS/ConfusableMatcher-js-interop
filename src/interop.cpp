@@ -1,8 +1,6 @@
 #include "interop.h"
 #include "ConfusableMatcher/ConfusableMatcher.h"
 
-using namespace Napi;
-
 ConfusableMatcherNapiInterop::ConfusableMatcherNapiInterop(const Napi::CallbackInfo &info) : ObjectWrap(info)
 {
     Napi::Array Map = info[0].As<Napi::Array>();
