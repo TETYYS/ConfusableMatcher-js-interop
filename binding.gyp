@@ -53,7 +53,7 @@
             ]
         },
         {
-            "target_name": "confusable-napi-interop-native",
+            "target_name": "confusablematcher-js-interop-native",
             "sources": [
                 "<!@(find ./src -maxdepth 1 \\( -name '*.cpp' -o -name '*.h' \\) -print)"
             ],
