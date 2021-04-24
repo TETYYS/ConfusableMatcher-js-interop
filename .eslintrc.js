@@ -128,7 +128,7 @@ module.exports = {
         },
         {
             /* TypeScript */
-            files: ['packages/**/*.ts'],
+            files: ['src/**/*.ts'],
             plugins: ['@typescript-eslint'],
             extends: [
                 'plugin:@typescript-eslint/eslint-recommended',
