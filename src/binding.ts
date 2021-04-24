@@ -55,6 +55,6 @@ for (const path of ADDON_PATHS) {
     }
 }
 
-export { classExport as ConfusableMatcher };
+export { classExport as ConfusableMatcherInterop };
 // eslint-disable-next-line import/no-default-export
 export default classExport!;

@@ -1,9 +1,9 @@
 import Benchmark from 'benchmark';
 
-import { ConfusableMatcher } from './binding';
+import { ConfusableMatcher } from '.';
 
 const suite = new Benchmark.Suite();
-const cm = new ConfusableMatcher([], [], true);
+const cm = new ConfusableMatcher();
 
 suite.add('ConfusableMatcher#indexOf', () =>
     cm.indexOf('SIMP', 'SIMP', {
