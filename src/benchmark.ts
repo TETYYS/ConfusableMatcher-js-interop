@@ -1,6 +1,6 @@
 import Benchmark from 'benchmark';
 
-import { ConfusableMatcher } from './wrapper';
+import { ConfusableMatcher } from './binding';
 
 const suite = new Benchmark.Suite();
 const cm = new ConfusableMatcher([], [], true);
