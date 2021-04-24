@@ -42,7 +42,7 @@
         "lint:fix": "yarn lint --fix",
         "format": "prettier --list-different ./**/*.{js,ts,json,md,yaml}",
         "format:fix": "prettier --write ./**/*.{js,ts,json,md,yaml}",
-        "spelling": "cspell --config=.cspell.json ./**/*.{js,ts,tsx,md}"
+        "spelling": "cspell --config=.cspell.json ./**/*.{js,ts,md}"
     },
     "dependencies": {
         "node-addon-api": "^3.1.0"
