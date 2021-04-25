@@ -13,8 +13,17 @@ export class ConfusableMatcher {
     private readonly _maps: Mapping[];
     private readonly _skips: Set<string>;
 
+    /**
+     * @internal
+     * @description C++ NAPI Object Reference
+     */
     private _instance!: ConfusableMatcherInstance;
 
+    /**
+     * @param maps An array of [Key, Value] tuples. A key is the character to look for, a value is the resulting map.
+     * @param skips An iterable of characters to skip.
+     * @param addDefaultValues Whether to add ASCII characters and spaces to the map.
+     */
     public constructor(maps: Mapping[] = [], skips: Iterable<string> = [], addDefaultValues = true) {
         this._maps = maps;
         this._skips = new Set(skips);
@@ -69,26 +78,50 @@ export class ConfusableMatcher {
     }
 
     //#region Mappings
+    /**
+     * @description Adds a single map.
+     * @param key The value to look for.
+     * @param value The replacement value.
+     */
     public addMapping(key: string, value: string): void {
         this._addMappings([[key, value]], true);
     }
 
+    /**
+     * @description Adds multiples maps.
+     * @param mappings An array of [Key, Value] tuples. A key is the character to look for, a value is the resulting map.
+     */
     public addMappings(mappings: Iterable<Mapping>): void {
         this._addMappings(mappings, true);
     }
 
+    /**
+     * @description Removes a single map.
+     * @param key The value to look for.
+     * @param value The replacement value.
+     */
     public removeMapping(key: string, value: string): void {
         this._removeMappings([[key, value]], true);
     }
 
+    /**
+     * @description Removes multiples maps.
+     * @param mappings An array of [Key, Value] tuples. A key is the character to look for, a value is the resulting map.
+     */
     public removeMappings(mappings: Mapping[]): void {
         this._removeMappings(mappings, true);
     }
 
+    /**
+     * @returns An array of maps.
+     */
     public getMappings(): Mapping[] {
         return this._maps;
     }
 
+    /**
+     * @returns Map key's for a value.
+     */
     public getKeyMappings(value: string): string[] {
         this._validateValue(value, 'Value');
         return this._instance.getKeyMappings(value);
@@ -96,34 +129,98 @@ export class ConfusableMatcher {
     //#endregion Mappings
 
     //#region Skips
+    /**
+     * @description Adds a single skip.
+     * @param skip The value to skip.
+     */
     public addSkip(skip: string): void {
         this._addSkips([skip], true);
     }
 
+    /**
+     * @description Adds multiple skips.
+     * @param skips An array of values to skip.
+     */
     public addSkips(skips: string[]): void {
         this._addSkips(skips, true);
     }
 
+    /**
+     * @description Removes a single skip.
+     * @param skip The skip value to remove.
+     */
     public removeSkip(skip: string): void {
         this._removeSkips([skip], true);
     }
 
+    /**
+     * @description Removes multiple skips.
+     * @param skips An array of skip values to remove.
+     */
     public removeSkips(skips: string[]): void {
         this._removeSkips(skips, true);
+    }
+
+    /**
+     * @returns An array of skips.
+     */
+    public getSkips(): string[] {
+        return [...this._skips];
     }
     //#endregion Skips
 
     //#region Comparators
+    /**
+     * @description Searches for the first occurrence of `needle` in `input`.
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns An object containing match information.
+     */
     public indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): IResult {
         return this._instance.indexOf(input, needle, this._fillDefaultOptions(options));
     }
 
+    /**
+     * @description Searches for the last occurrence of `needle` in `input`.
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns An object containing match information.
+     */
+    public lastIndexOf(
+        input: string,
+        needle: string,
+        options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>
+    ): IResult {
+        return this._instance.indexOf(
+            input,
+            needle,
+            this._fillDefaultOptions({
+                ...options,
+                startFromEnd: true,
+                startIndex: input.length - 1,
+            })
+        );
+    }
+
+    /**
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns True if the `needle` is found inside `input`.
+     */
     public contains(input: string, needle: string, options?: IIndexOfOptions): boolean {
         const result = this._instance.indexOf(input, needle, this._fillDefaultOptions(options));
         return result.status === EReturnStatus.MATCH;
     }
     //#endregion Comparators
 
+    /**
+     * @description Validates whether a `value` can be used in the confusable matcher instance.
+     * @param value The value to check.
+     * @param name The parameter name of the value.
+     */
     private _validateValue(value: string, name: string): void {
         if (value.length === 0) {
             throw new Error(`${name} cannot be empty.`);
@@ -196,10 +293,16 @@ export class ConfusableMatcher {
         }
     }
 
+    /**
+     * @description Constructs a new instance of the NAPI ConfusableMatcher interop and updates the JavaScript reference.
+     */
     private _rebuildInstance(): void {
-        this._instance = new ConfusableMatcherInterop([...this._maps.values()], [...this._skips.values()], false);
+        this._instance = new ConfusableMatcherInterop([...this._maps], [...this._skips], false);
     }
 
+    /**
+     * @description Pre-fills default search options.
+     */
     private _fillDefaultOptions(options?: Partial<IIndexOfOptions>): IIndexOfOptions {
         return Object.assign<IIndexOfOptions, Partial<IIndexOfOptions> | undefined>({ ...DEFAULT_OPTIONS }, options);
     }

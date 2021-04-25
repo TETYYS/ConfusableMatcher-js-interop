@@ -23,7 +23,7 @@ export interface IIndexOfOptions {
 }
 
 export declare class ConfusableMatcherInstance {
-    getKeyMappings(key: string): string[];
+    getKeyMappings(value: string): string[];
     indexOf(input: string, needle: string, options?: IIndexOfOptions): IResult;
 }
 
