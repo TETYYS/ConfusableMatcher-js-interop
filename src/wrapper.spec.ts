@@ -1,5 +1,5 @@
-/* cSpell: disable */
-import type { Mapping } from './binding';
+import type { IIndexOfOptions, Mapping } from './binding';
+import { EReturnStatus } from './binding';
 import { ConfusableMatcher } from './wrapper';
 
 describe('Unit Tests', () => {
@@ -12,6 +12,7 @@ describe('Unit Tests', () => {
         ]);
         const r = m.indexOf('TEST', 'NICE', { matchRepeating: false, startIndex: 0 });
 
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(4);
     });
@@ -23,22 +24,24 @@ describe('Unit Tests', () => {
         ]);
 
         let r = m.indexOf('VV', 'VAVOVAVO', { matchRepeating: false, startIndex: 0 });
-        expect(r.start).toEqual(-1);
-        expect(r.size).toEqual(-1);
-
+        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
         r = m.indexOf('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start == 0 || r.start == 4).toBeTruthy();
         expect(r.size == 3 || r.size == 4).toBeTruthy();
 
         r = m.indexOf('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 4 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(4);
         expect(r.size == 3 || r.size == 4).toBeTruthy();
 
         r = m.indexOf('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 2 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start == 2 || r.start == 4).toBeTruthy();
         expect(r.size == 3 || r.size == 4).toBeTruthy();
 
         r = m.indexOf('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 3 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(4);
         expect(r.size == 3 || r.size == 4).toBeTruthy();
     });
@@ -53,6 +56,7 @@ describe('Unit Tests', () => {
             true
         );
         const r = m.indexOf('\u{00000002}\u{00000003}\u{000000FA}\u{000000FF}', 'AB');
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(6);
     });
@@ -66,6 +70,7 @@ describe('Unit Tests', () => {
             ['_', ' ']
         );
         const r = m.indexOf('A__ _ $$$[)D', 'ASD', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(11);
     });
@@ -77,6 +82,7 @@ describe('Unit Tests', () => {
             ['I', '/'],
         ]);
         const r = m.indexOf('/\\/CE', 'NICE', { matchRepeating: false, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(5);
     });
@@ -89,14 +95,14 @@ describe('Unit Tests', () => {
         ]);
 
         let r = m.indexOf('I/\\/AM', 'INAN', { matchRepeating: true, startIndex: 0 });
-        expect(r.start).toEqual(-1);
-        expect(r.size).toEqual(-1);
-
+        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
         r = m.indexOf('I/\\/AM', 'INAM', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(6);
 
         r = m.indexOf('I/\\/AM', 'IIVAM', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(6);
     });
@@ -107,6 +113,7 @@ describe('Unit Tests', () => {
         const m = new ConfusableMatcher(getDefaultMap(), ['_', '%', '$']);
         const r = m.indexOf(s, 'NIGGER', { matchRepeating: true, startIndex: 0 });
 
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect((r.start == 64 && r.size == 57) || (r.start == 89 && r.size == 32)).toBeTruthy();
     });
 
@@ -117,6 +124,7 @@ describe('Unit Tests', () => {
             'ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890',
             { matchRepeating: false }
         );
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(5);
         expect(r.size).toEqual(397);
     });
@@ -149,6 +157,7 @@ describe('Unit Tests', () => {
             startIndex: 0,
             statePushLimit: 1000,
         });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start == 0 || r.start == 1).toBeTruthy();
         expect(r.size).toEqual(1);
     });
@@ -201,6 +210,7 @@ describe('Unit Tests', () => {
             startIndex: 0,
             statePushLimit: 1000,
         });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(2);
 
@@ -214,6 +224,7 @@ describe('Unit Tests', () => {
                 statePushLimit: 2000,
             }
         );
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size >= 547 && r.size <= 567).toBeTruthy();
     });
@@ -221,11 +232,11 @@ describe('Unit Tests', () => {
     test('Test10', () => {
         const m = new ConfusableMatcher();
         let r = m.indexOf(':)', '', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(0);
         r = m.indexOf('', ':)', { matchRepeating: true, startIndex: 0 });
-        expect(r.start).toEqual(-1);
-        expect(r.size).toEqual(-1);
+        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
     });
 
     test('Test11', () => {
@@ -236,13 +247,13 @@ describe('Unit Tests', () => {
             startIndex: 0,
             statePushLimit: 1000,
         });
-        expect(r.start).toEqual(-1);
-        expect(r.size).toEqual(-1);
+        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
     });
 
     test('Test12', () => {
         const m = new ConfusableMatcher([]);
         const r = m.indexOf('A', 'A', { matchRepeating: false, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(1);
     });
@@ -250,8 +261,7 @@ describe('Unit Tests', () => {
     test('Test12.1', () => {
         const m = new ConfusableMatcher([], [], false);
         const r = m.indexOf('A', 'A', { matchRepeating: false, startIndex: 0 });
-        expect(r.start).toEqual(-1);
-        expect(r.size).toEqual(-1);
+        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
     });
 
     test('Test13', () => {
@@ -288,6 +298,7 @@ describe('Unit Tests', () => {
     test('Test15', () => {
         const m = new ConfusableMatcher([['.', '.']], ['.']);
         const r = m.indexOf('FOLLOWONBOT.COM', 'FOLLOWONBOT.COM', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(15);
     });
@@ -302,8 +313,7 @@ describe('Unit Tests', () => {
             'NNNNNNNNNNNNNNNA',
             { matchRepeating: true, startIndex: 0 }
         );
-        expect(r.start).toEqual(-2);
-        expect(r.size).toEqual(-2);
+        expect(r.status).toEqual(EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED);
     });
 
     test('Test17', () => {
@@ -317,8 +327,7 @@ describe('Unit Tests', () => {
             startIndex: 0,
             statePushLimit: 100000,
         });
-        expect(r.start).toEqual(-1);
-        expect(r.size).toEqual(-1);
+        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
     });
 
     test('Test18', () => {
@@ -329,6 +338,7 @@ describe('Unit Tests', () => {
             ['A', '234'],
         ]);
         const r = m.indexOf('N12345M', 'NAM', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(7);
     });
@@ -340,6 +350,7 @@ describe('Unit Tests', () => {
             ['C', '1'],
         ]);
         const r = m.indexOf('111111', 'ABC', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(3);
     });
@@ -391,10 +402,12 @@ describe('Unit Tests', () => {
         const m = new ConfusableMatcher(getDefaultMap());
 
         let r = m.indexOf(s, 'AA', { matchRepeating: true });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(2);
 
         r = m.indexOf(s, 'AA', { matchRepeating: true, startFromEnd: true, startIndex: s.length - 1 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(15);
         expect(r.size).toEqual(2);
     });
@@ -403,6 +416,7 @@ describe('Unit Tests', () => {
         const s = 'DASD';
         const m = new ConfusableMatcher(getDefaultMap());
         const r = m.indexOf(s, 'D', { matchRepeating: true, startFromEnd: true, startIndex: s.length - 1 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(3);
         expect(r.size).toEqual(1);
     });
@@ -412,8 +426,7 @@ describe('Unit Tests', () => {
         const m = new ConfusableMatcher(getDefaultMap());
 
         let r = m.indexOf(s, 'ASB', { matchRepeating: true, startFromEnd: false, startIndex: 0, statePushLimit: 20 });
-        expect(-2).toEqual(r.start);
-        expect(-2).toEqual(r.size);
+        expect(r.status).toEqual(EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED);
 
         r = m.indexOf(s, 'ASB', {
             matchRepeating: true,
@@ -421,6 +434,7 @@ describe('Unit Tests', () => {
             startIndex: s.length - 1,
             statePushLimit: 20,
         });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(92);
         expect(r.size).toEqual(3);
     });
@@ -428,6 +442,7 @@ describe('Unit Tests', () => {
     test('Test26', () => {
         const m = new ConfusableMatcher(getDefaultMap());
         const r = m.indexOf('AAA', 'A', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(3);
     });
@@ -435,6 +450,7 @@ describe('Unit Tests', () => {
     test('Test27', () => {
         const m = new ConfusableMatcher(getDefaultMap());
         const r = m.indexOf('BB AAA', 'A', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(3);
         expect(r.size).toEqual(3);
     });
@@ -442,6 +458,7 @@ describe('Unit Tests', () => {
     test('Test28', () => {
         const m = new ConfusableMatcher(getDefaultMap());
         const r = m.indexOf('N|\\|NC', 'N', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(5);
     });
@@ -453,6 +470,7 @@ describe('Unit Tests', () => {
             ['N', '//'],
         ]);
         const r = m.indexOf('N/\\///AN', 'N', { matchRepeating: true, startIndex: 0 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(8);
     });
@@ -465,8 +483,351 @@ describe('Unit Tests', () => {
             startIndex: 0,
             statePushLimit: 60,
         });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toBeGreaterThan(10);
+    });
+
+    test('Test31', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher();
+
+        let r = m.indexOf('X', 'X', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(1);
+
+        r = m.indexOf('aX', 'X', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
+        expect(r.start).toEqual(1);
+        expect(r.size).toEqual(1);
+
+        r = m.indexOf('Xa', 'X', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(1);
+
+        r = m.indexOf('a X', 'X', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(1);
+
+        r = m.indexOf('X a', 'X', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(1);
+
+        r = m.indexOf('X;duper', 'X', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(1);
+
+        r = m.indexOf('yes\uFEFFX', 'X', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(6);
+        expect(r.size).toEqual(1);
+    });
+
+    test('Test32', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher();
+
+        let r = m.indexOf('QQQ', 'Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(3);
+
+        r = m.indexOf('aQQQ', 'Q', { ...opts });
+        expect(
+            r.status === EReturnStatus.WORD_BOUNDARY_FAIL_START || r.status === EReturnStatus.WORD_BOUNDARY_FAIL_END
+        ).toBeTruthy();
+        expect(
+            (r.start === 1 && r.size === 1) ||
+                (r.start === 1 && r.size === 2) ||
+                (r.start === 1 && r.size === 3) ||
+                (r.start === 2 && r.size === 1) ||
+                (r.start === 2 && r.size === 2) ||
+                (r.start === 3 && r.size === 1)
+        ).toBeTruthy();
+
+        r = m.indexOf('QQQa', 'Q', { ...opts });
+        expect(
+            r.status === EReturnStatus.WORD_BOUNDARY_FAIL_START || r.status === EReturnStatus.WORD_BOUNDARY_FAIL_END
+        ).toBeTruthy();
+        expect(
+            (r.start === 0 && r.size === 1) ||
+                (r.start === 0 && r.size === 2) ||
+                (r.start === 0 && r.size === 3) ||
+                (r.start === 1 && r.size === 1) ||
+                (r.start === 1 && r.size === 2) ||
+                (r.start === 2 && r.size === 1)
+        ).toBeTruthy();
+
+        r = m.indexOf('a QQQ', 'Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(3);
+
+        r = m.indexOf('QQQ a', 'Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(3);
+
+        r = m.indexOf('QQQ;duper', 'Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(3);
+
+        r = m.indexOf('yes\u202FQQQ', 'Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(6);
+        expect(r.size).toEqual(3);
+    });
+
+    test('Test33', () => {
+        const input = 'a QBQQ';
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            startFromEnd: true,
+            startIndex: input.length - 1,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher([], ['B']);
+
+        const r = m.indexOf(input, 'Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(4);
+    });
+
+    test('Test34', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher();
+
+        let r = m.indexOf('SUPER', 'SUPER', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('aSUPER', 'SUPER', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
+        expect(r.start).toEqual(1);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('SUPERa', 'SUPER', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('a SUPER', 'SUPER', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('SUPER a', 'SUPER', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('SUPER;duper', 'SUPER', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('yes\u202FSUPER', 'SUPER', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(6);
+        expect(r.size).toEqual(5);
+    });
+
+    test('Test35', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher([[' ', ' ']], [' ']);
+
+        let r = m.indexOf('a Q Q f', 'Q Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(3);
+
+        r = m.indexOf('aQ Q f', 'Q Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
+        expect(r.start).toEqual(1);
+        expect(r.size).toEqual(3);
+
+        r = m.indexOf('a Q Qf', 'Q Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(3);
+    });
+
+    test('Test36', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher([[' ', ' ']], [' ']);
+
+        const r = m.indexOf('a Q Q Q f', 'Q Q', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start == 2 || r.start == 3).toBeTruthy();
+        expect(r.size == 3 || r.size == 4).toBeTruthy();
+    });
+
+    test('Test37', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher([
+            ['a', 'a'],
+            ['s', 's'],
+            [' ', ' '],
+            ['i', 'i'],
+            ['m', 'm'],
+            ['p', 'p'],
+        ]);
+
+        const r = m.indexOf('as simp', 'simp', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(3);
+        expect(r.size).toEqual(4);
+    });
+
+    test('Test38', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher();
+
+        let r = m.indexOf('a', '', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(0);
+
+        r = m.indexOf('', '', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(0);
+
+        r = m.indexOf('', 'a', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
+    });
+
+    test('Test39', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher([], ['f']);
+
+        let r = m.indexOf('AABC', 'ABC', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(4);
+
+        r = m.indexOf('AfABC', 'ABC', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('ABCC', 'ABC', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(4);
+
+        r = m.indexOf('ABCfC', 'ABC', { ...opts });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+    });
+
+    test('Test40', () => {
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            startFromEnd: true,
+            statePushLimit: 50_000,
+        };
+        const m = new ConfusableMatcher([], ['f']);
+
+        let r = m.indexOf('AABC', 'ABC', { ...opts, startIndex: 3 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(4);
+
+        r = m.indexOf('AfABC', 'ABC', { ...opts, startIndex: 4 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('ABCC', 'ABC', { ...opts, startIndex: 3 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(4);
+
+        r = m.indexOf('ABCfC', 'ABC', { ...opts, startIndex: 4 });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(5);
+    });
+
+    test('Test41', () => {
+        const m = new ConfusableMatcher(
+            [
+                ['s', 's'],
+                ['i', '1'],
+                ['m', 'm'],
+                ['p', 'p'],
+            ],
+            [' ']
+        );
+        const r = m.indexOf('agdhsjs s 1 mmm ppps dhsjdhsd', 'simps', {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            statePushLimit: 50000,
+        });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(8);
+        expect(r.size).toEqual(12);
+    });
+
+    test('Test42', () => {
+        const m = new ConfusableMatcher([], ['░']);
+        const r = m.indexOf('░S░I░M░P░', 'SIMP', {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            statePushLimit: 50000,
+        });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(19);
+    });
+
+    test('Test43', () => {
+        const m = new ConfusableMatcher([['S', '░']], ['░']);
+        const r = m.indexOf('░S░I░M░P░', 'SIMP', {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            statePushLimit: 50000,
+        });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(19);
     });
 });
 

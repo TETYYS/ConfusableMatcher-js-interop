@@ -249,15 +249,15 @@ export class ConfusableMatcher {
             case EReturnStatus.MATCH:
                 return result;
             case EReturnStatus.NO_MATCH:
-                return { ...result, size: -1, start: -1 };
+                return result;
             // throw new Error();
             case EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED:
-                return { ...result, size: -2, start: -2 };
+                return result;
             // throw new Error();
             case EReturnStatus.WORD_BOUNDARY_FAIL_END:
-                return { ...result, size: -4, start: -4 };
+                return result;
             case EReturnStatus.WORD_BOUNDARY_FAIL_START:
-                return { ...result, size: -3, start: -3 };
+                return result;
             // throw new Error();
         }
     }
