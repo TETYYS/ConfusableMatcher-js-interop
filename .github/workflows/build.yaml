@@ -54,11 +54,11 @@ jobs:
             - name: Spelling
               run: yarn spelling
 
-            - name: Test
-              run: yarn test
-
             - name: Build
               run: yarn build
+
+            - name: Test
+              run: yarn test
 
             - name: Publish
               if: github.ref == 'refs/heads/master'
