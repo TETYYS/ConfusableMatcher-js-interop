@@ -31,7 +31,6 @@
         "native"
     ],
     "scripts": {
-        "install": "echo \"Preventing Build on Install\" && exit 0",
         "prebuild": "./scripts/prebuild.sh",
         "build": "tsc -b tsconfig.build.json",
         "clean": "tsc -b tsconfig.build.json --clean",
