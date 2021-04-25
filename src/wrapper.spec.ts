@@ -1,3 +1,4 @@
+/* cSpell: disable */
 import type { IIndexOfOptions, Mapping } from './binding';
 import { EReturnStatus } from './binding';
 import { ConfusableMatcher } from './wrapper';
