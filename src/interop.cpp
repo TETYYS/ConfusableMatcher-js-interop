@@ -30,7 +30,7 @@ ConfusableMatcherNapiInterop::ConfusableMatcherNapiInterop(const Napi::CallbackI
     }
 
     /**
-     *
+     * Default Values
      */
     bool addDefaults = info[2].As<Napi::Boolean>().ToBoolean();
 
