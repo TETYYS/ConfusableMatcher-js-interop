@@ -17,7 +17,9 @@ export class ConfusableMatcher {
 
     public constructor(map: Mapping[] = [], skips: Iterable<string> = [], addDefaultValues = true) {
         if (map.length) {
-            this._map.push(...map);
+            for (const [key, value] of map) {
+                this._addMap(key, value);
+            }
         }
 
         this._skips = new Set(skips);
@@ -44,87 +46,40 @@ export class ConfusableMatcher {
                 '　',
             ];
             for (const space of spaces) {
-                this._map.push([' ', space]);
+                this._addMap(' ', space);
             }
 
             for (let c = 'A'.charCodeAt(0); c <= 'Z'.charCodeAt(0); c++) {
                 const lc = String.fromCharCode(c);
                 const uc = String.fromCharCode(c + 0x20);
-                this._map.push([lc, lc]);
-                this._map.push([lc, uc]);
-                this._map.push([uc, uc]);
-                this._map.push([uc, lc]);
+                this._addMap(lc, lc);
+                this._addMap(lc, uc);
+                this._addMap(uc, uc);
+                this._addMap(uc, lc);
             }
 
             for (let c = '0'.charCodeAt(0); c <= '9'.charCodeAt(0); c++) {
                 const char = String.fromCharCode(c);
-                this._map.push([char, char]);
+                this._addMap(char, char);
             }
         }
 
         this._rebuildInstance();
     }
 
+    //#region Mappings
     public addMapping(key: string, value: string): void {
-        if (key.length === 0) {
-            throw new Error('Key provided is empty.');
-        }
-        if (key[0] == '\x00' || key[0] == '\x01') {
-            throw new Error('Key cannot begin with \\x00 or \\x01');
-        }
-        if (value.length === 0) {
-            throw new Error('Value provided is empty.');
-        }
-        if (value[0] == '\x00' || value[0] == '\x01') {
-            throw new Error('Value cannot begin with \\x00 or \\x01');
-        }
-
-        this._map.push([key, value]);
+        this._addMap(key, value);
         this._rebuildInstance();
     }
 
-    public addMappings(mappings: Mapping[]): void {
+    public addMappings(mappings: Iterable<Mapping>): void {
         for (const [key, value] of mappings) {
-            if (key.length === 0) {
-                throw new Error('Key provided is empty.');
-            }
-            if (key[0] == '\x00' || key[0] == '\x01') {
-                throw new Error('Key cannot begin with \\x00 or \\x01');
-            }
-            if (value.length === 0) {
-                throw new Error('Value provided is empty.');
-            }
-            if (value[0] == '\x00' || value[0] == '\x01') {
-                throw new Error('Value cannot begin with \\x00 or \\x01');
-            }
-
-            this._map.push([key, value]);
+            this._addMap(key, value);
         }
 
         this._rebuildInstance();
     }
-
-    // public expandMappings(): void {
-    //     for (const [key, value] of this._map) {
-    //         const cps = [...value];
-
-    //         if (cps.every((x) => x.charCodeAt(0) < 255) && cps.length >= 2 && cps.length <= 4) {
-    //             const add = (baseValue: string, constructed: string) => {
-    //                 if (baseValue.length == 0) {
-    //                     this._map.push([key, constructed]);
-    //                     return;
-    //                 }
-
-    //                 const values = this._instance.GetKeyMappings(baseValue[0]);
-    //                 for (const val of values) {
-    //                     add(baseValue.slice(1), constructed + val);
-    //                 }
-    //             };
-
-    //             add(value, '');
-    //         }
-    //     }
-    // }
 
     public removeMapping(key: string, value: string): void {
         if (key.length === 0) {
@@ -154,11 +109,9 @@ export class ConfusableMatcher {
             break;
         }
 
-        if (!didRemove) {
-            throw new Error('Mapping does not exist.');
+        if (didRemove) {
+            this._rebuildInstance();
         }
-
-        this._rebuildInstance();
     }
 
     /**
@@ -176,13 +129,13 @@ export class ConfusableMatcher {
                 throw new Error('Mapping key provided is empty.');
             }
             if (key[0] == '\x00' || key[0] == '\x01') {
-                throw new Error('Key cannot begin with \\x00 or \\x01');
+                throw new Error('Mapping key cannot begin with \\x00 or \\x01');
             }
             if (value.length === 0) {
                 throw new Error('Mapping value provided is empty.');
             }
             if (value[0] == '\x00' || value[0] == '\x01') {
-                throw new Error('Value cannot begin with \\x00 or \\x01');
+                throw new Error('Mapping value cannot begin with \\x00 or \\x01');
             }
 
             for (let i = 0; i < this._map.length; i++) {
@@ -199,20 +152,16 @@ export class ConfusableMatcher {
             }
         }
 
-        if (!didRemoveAny) {
-            throw new Error('A mapping in the list does not exist.');
-        }
-
-        this._rebuildInstance();
-    }
-
-    public *getMappings(): IterableIterator<Mapping> {
-        for (const mapping of this._map) {
-            yield mapping;
+        if (didRemoveAny) {
+            this._rebuildInstance();
         }
     }
 
-    public getMappingsForKey(key: string): string[] {
+    public getMappings(): Mapping[] {
+        return this._map;
+    }
+
+    public getKeyMappings(key: string): string[] {
         if (key.length === 0) {
             throw new Error('Key provided is empty.');
         }
@@ -222,7 +171,9 @@ export class ConfusableMatcher {
 
         return this._instance.getKeyMappings(key);
     }
+    //#endregion Mappings
 
+    //#region Skips
     public addSkip(skip: string): void {
         if (skip.length === 0) {
             throw new Error('Skip provided is empty.');
@@ -259,11 +210,9 @@ export class ConfusableMatcher {
         }
 
         const didRemove = this._skips.delete(skip);
-        if (!didRemove) {
-            throw new Error('Skip does not exist.');
+        if (didRemove) {
+            this._rebuildInstance();
         }
-
-        this._rebuildInstance();
     }
 
     /**
@@ -288,11 +237,9 @@ export class ConfusableMatcher {
             }
         }
 
-        if (!didRemoveAny) {
-            throw new Error('A skip in the list does not exist.');
+        if (didRemoveAny) {
+            this._rebuildInstance();
         }
-
-        this._rebuildInstance();
     }
 
     public indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): IResult {
@@ -302,14 +249,15 @@ export class ConfusableMatcher {
             case EReturnStatus.MATCH:
                 return result;
             case EReturnStatus.NO_MATCH:
-                return result;
+                return { ...result, size: -1, start: -1 };
             // throw new Error();
             case EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED:
-                return result;
+                return { ...result, size: -2, start: -2 };
             // throw new Error();
             case EReturnStatus.WORD_BOUNDARY_FAIL_END:
+                return { ...result, size: -4, start: -4 };
             case EReturnStatus.WORD_BOUNDARY_FAIL_START:
-                return result;
+                return { ...result, size: -3, start: -3 };
             // throw new Error();
         }
     }
@@ -318,7 +266,24 @@ export class ConfusableMatcher {
         return this._instance.indexOf(input, needle, this._fillDefaultOptions(options)).start > -1;
     }
 
-    private _rebuildInstance() {
+    private _addMap(key: string, value: string) {
+        if (key.length === 0) {
+            throw new Error('Key provided is empty.');
+        }
+        if (key[0] == '\x00' || key[0] == '\x01') {
+            throw new Error('Key cannot begin with \\x00 or \\x01');
+        }
+        if (value.length === 0) {
+            throw new Error('Value provided is empty.');
+        }
+        if (value[0] == '\x00' || value[0] == '\x01') {
+            throw new Error('Value cannot begin with \\x00 or \\x01');
+        }
+
+        this._map.push([key, value]);
+    }
+
+    private _rebuildInstance(): void {
         this._instance = new ConfusableMatcherInterop([...this._map.values()], [...this._skips.values()], false);
     }
 

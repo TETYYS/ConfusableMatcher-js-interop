@@ -270,10 +270,10 @@ describe('Unit Tests', () => {
         expect(() => new ConfusableMatcher([['\x01\x00', '\x00\x01']])).toThrow();
         expect(() => new ConfusableMatcher([['A\x00', '\x00A']])).toThrow();
         expect(() => new ConfusableMatcher([['\x01\x00', '\x00\x01']])).toThrow();
-        expect(() => new ConfusableMatcher([['A\x00', 'A\x01']])).toThrow();
-        expect(() => new ConfusableMatcher([['A\x01', 'A\x00']])).toThrow();
-        expect(() => new ConfusableMatcher([['A\x00', 'A\x00']])).toThrow();
-        expect(() => new ConfusableMatcher([['A\x01', 'A\x01']])).toThrow();
+        expect(() => new ConfusableMatcher([['A\x00', 'A\x01']])).not.toThrow();
+        expect(() => new ConfusableMatcher([['A\x01', 'A\x00']])).not.toThrow();
+        expect(() => new ConfusableMatcher([['A\x00', 'A\x00']])).not.toThrow();
+        expect(() => new ConfusableMatcher([['A\x01', 'A\x01']])).not.toThrow();
     });
 
     test('Test14', () => {
@@ -354,9 +354,9 @@ describe('Unit Tests', () => {
             [],
             false
         );
-        expect('1').toEqual(m.getMappingsForKey('A')[0]);
-        expect('1').toEqual(m.getMappingsForKey('B')[0]);
-        expect('1').toEqual(m.getMappingsForKey('C')[0]);
+        expect('1').toEqual(m.getKeyMappings('A')[0]);
+        expect('1').toEqual(m.getKeyMappings('B')[0]);
+        expect('1').toEqual(m.getKeyMappings('C')[0]);
     });
 
     test('Test21', () => {
@@ -369,10 +369,10 @@ describe('Unit Tests', () => {
             [],
             false
         );
-        const mappings = m.getMappingsForKey('1');
+        const mappings = m.getKeyMappings('1');
         expect(mappings[0] === 'AB' || mappings[0] === 'CD').toBeTruthy();
         expect(mappings[1] === 'AB' || mappings[1] === 'CD').toBeTruthy();
-        expect('EEE').toEqual(m.getMappingsForKey('2')[0]);
+        expect('EEE').toEqual(m.getKeyMappings('2')[0]);
     });
 
     test('Test22', () => {
@@ -383,7 +383,7 @@ describe('Unit Tests', () => {
             [],
             false
         );
-        expect(m.getMappingsForKey(KEY)).toHaveLength(COUNT);
+        expect(m.getKeyMappings(KEY)).toHaveLength(COUNT);
     });
 
     test('Test23', () => {
