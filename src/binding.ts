@@ -15,11 +15,11 @@ export interface IResult {
 }
 
 export interface IIndexOfOptions {
-    matchRepeating?: boolean;
-    startIndex?: number;
-    startFromEnd?: boolean;
-    statePushLimit?: number;
-    matchOnWordBoundary?: boolean;
+    matchRepeating: boolean;
+    startIndex: number;
+    startFromEnd: boolean;
+    statePushLimit: number;
+    matchOnWordBoundary: boolean;
 }
 
 export declare class ConfusableMatcherInstance {

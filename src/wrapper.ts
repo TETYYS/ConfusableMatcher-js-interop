@@ -1,7 +1,7 @@
 import type { ConfusableMatcherInstance, IIndexOfOptions, IResult, Mapping } from './binding';
 import { ConfusableMatcherInterop, EReturnStatus } from './binding';
 
-const DEFAULT_OPTIONS: Partial<IIndexOfOptions> = {
+const DEFAULT_OPTIONS: IIndexOfOptions = {
     matchOnWordBoundary: false,
     matchRepeating: true,
     startFromEnd: false,
