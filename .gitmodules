@@ -1,0 +1,3 @@
+[submodule "src/ConfusableMatcher"]
+	path = src/ConfusableMatcher
+	url = https://github.com/TETYYS/ConfusableMatcher.git
