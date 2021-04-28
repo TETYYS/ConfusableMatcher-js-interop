@@ -7,9 +7,6 @@
         "TETYYS",
         "Robinlemonz"
     ],
-    "files": [
-        "build"
-    ],
     "main": "build/src/index.js",
     "types": "build/src/index.d.ts",
     "gypfile": true,
@@ -34,6 +31,7 @@
         "native"
     ],
     "scripts": {
+        "install": "cmake-js compile",
         "build": "tsc -b tsconfig.build.json",
         "clean": "tsc -b tsconfig.build.json --clean",
         "postclean": "rimraf build coverage src/ConfusableMatcher/CMakeBuild",
@@ -48,6 +46,9 @@
         "format": "prettier --list-different ./**/*.{js,ts,json,md,yaml}",
         "format:fix": "prettier --write ./**/*.{js,ts,json,md,yaml}",
         "spelling": "cspell --config=.cspell.json ./**/*.{js,ts,md}"
+    },
+    "dependencies": {
+        "cmake-js": "^6.1.0"
     },
     "devDependencies": {
         "@types/benchmark": "^2.1.0",
