@@ -11,6 +11,16 @@
     "types": "build/src/index.d.ts",
     "gypfile": true,
     "sideEffects": false,
+    "files": [
+        "CMakeLists.txt",
+        "build/release",
+        "build/src",
+        "!build/src/ConfusableMatcher",
+        "src/*.cpp",
+        "src/*.h",
+        "src/ConfusableMatcher",
+        "!src/ConfusableMatcher/**/*.git*"
+    ],
     "engines": {
         "node": ">=14.0.0"
     },
