@@ -2,6 +2,14 @@
 
 This library exports a wrapper class bundled with TypeScript declarations that allows you to use the C++ ConfusableMatcher inside your JavaScript (NodeJS/CommonJS) applications.
 
+## Installing
+
+**To install this module, CMake v3.9 or higher must be present on the system.**
+
+```bash
+yarn add confusablematcher-js-interop
+```
+
 ## Benchmarks
 
 | Processor                 | Memory                                         | Performance                              |
