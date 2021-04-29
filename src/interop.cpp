@@ -76,12 +76,12 @@ Napi::Value ConfusableMatcherNapiInterop::indexOf(const Napi::CallbackInfo &info
     std::string needle = info[1].As<Napi::String>().Utf8Value();
     Napi::Object optionsObject = info[2].As<Napi::Object>();
 
-    CMOptions cmOpts = {
-        .MatchRepeating = optionsObject.Get("matchRepeating").As<Napi::Boolean>().ToBoolean(),
-        .StartIndex = optionsObject.Get("startIndex").As<Napi::Number>().ToNumber().Uint32Value(),
-        .StartFromEnd = optionsObject.Get("startFromEnd").As<Napi::Boolean>().ToBoolean(),
-        .StatePushLimit = optionsObject.Get("statePushLimit").As<Napi::Number>().ToNumber().Uint32Value(),
-        .MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").As<Napi::Boolean>().ToBoolean()};
+    CMOptions cmOpts = {};
+    cmOpts.MatchRepeating = optionsObject.Get("matchRepeating").As<Napi::Boolean>().ToBoolean();
+    cmOpts.StartIndex = optionsObject.Get("startIndex").As<Napi::Number>().ToNumber().Uint32Value();
+    cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").As<Napi::Boolean>().ToBoolean();
+    cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").As<Napi::Number>().ToNumber().Uint32Value();
+    cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").As<Napi::Boolean>().ToBoolean();
 
     CMReturn result = this->_instance->IndexOf(in, needle, cmOpts);
 
