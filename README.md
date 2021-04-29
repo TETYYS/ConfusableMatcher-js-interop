@@ -4,7 +4,7 @@ This library exports a wrapper class bundled with TypeScript declarations that a
 
 ## Installing
 
-**To install this module, CMake v3.9 or higher must be present on the system.**
+**To install this module, CMake v3.0 or higher must be present on the system.**
 
 ```bash
 yarn add confusablematcher-js-interop
