@@ -13,7 +13,6 @@
     "sideEffects": false,
     "files": [
         "CMakeLists.txt",
-        "build/release",
         "build/src",
         "!build/src/ConfusableMatcher",
         "src/*.cpp",
