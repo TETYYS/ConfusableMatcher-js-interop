@@ -43,7 +43,7 @@
         "install": "cmake-js compile",
         "build": "tsc -b tsconfig.build.json",
         "clean": "tsc -b tsconfig.build.json --clean",
-        "postclean": "rimraf build coverage src/ConfusableMatcher/CMakeBuild",
+        "postclean": "rimraf build coverage",
         "test": "jest --verbose --passWithNoTests",
         "test:watch": "yarn test --watchAll",
         "test:coverage": "yarn test --coverage",
