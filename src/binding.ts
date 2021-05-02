@@ -28,7 +28,7 @@ export declare class ConfusableMatcherInstance {
 }
 
 interface IConfusableMatcherProptotype {
-    new (maps?: string[][], skips?: string[], addDefaultValues?: boolean): ConfusableMatcherInstance;
+    new (maps: string[][], skips: string[], addDefaultValues: boolean): ConfusableMatcherInstance;
 }
 
 interface IAddonExports {
