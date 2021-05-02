@@ -808,35 +808,109 @@ describe('Unit Tests', () => {
     });
 
     test('Test42', () => {
-        const m = new ConfusableMatcher([], ['░']);
-        const r = m.indexOf('░S░I░M░P░', 'SIMP', {
+        const opts: Partial<IIndexOfOptions> = {
             matchOnWordBoundary: true,
             matchRepeating: true,
             statePushLimit: 50000,
-        });
+        };
+        let m = new ConfusableMatcher([], ['░']);
+        let r = m.indexOf('░S░I░M░P░', 'SIMP', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(1);
+        expect(r.size).toEqual(7);
+
+        m = new ConfusableMatcher([], ['Ž']);
+        r = m.indexOf('ŽSŽIŽMŽPŽ', 'SIMP', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(9);
     });
 
     test('Test43', () => {
-        const m = new ConfusableMatcher([['S', '░']], ['░']);
-        const r = m.indexOf('░S░I░M░P░', 'SIMP', {
+        const map: Mapping[] = [
+            ['S', '░'],
+            ['S', 'Ž'],
+        ];
+        const opts: Partial<IIndexOfOptions> = {
             matchOnWordBoundary: true,
             matchRepeating: true,
             statePushLimit: 50000,
-        });
+        };
+        let m = new ConfusableMatcher(map, ['░']);
+        let r = m.indexOf('░S░I░M░P░', 'SIMP', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(8);
+
+        m = new ConfusableMatcher(map, ['Ž']);
+        r = m.indexOf('ŽSŽIŽMŽPŽ', 'SIMP', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(9);
     });
 
     test('Test44', () => {
+        const m = new ConfusableMatcher([[' ', ' ']]);
+        const r = m.indexOf('A  B', ' B', {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            statePushLimit: 50000,
+        });
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(2);
+    });
+
+    test('Test44.1', () => {
         const m = new ConfusableMatcher([['M', 'ⓜ']]);
         const r = m.indexOf('SIⓜP', 'SIMP');
         expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
         expect(r.size).toEqual(4);
+    });
+
+    test('Test45', () => {
+        const m = new ConfusableMatcher([], ['X']);
+        const opts: Partial<IIndexOfOptions> = {
+            matchOnWordBoundary: true,
+            matchRepeating: true,
+            statePushLimit: 50000,
+        };
+
+        let r = m.indexOf('XXABC', 'ABC', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf('X XABC', 'ABC', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(4);
+
+        r = m.indexOf('X૰XABC', 'ABC', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(4);
+
+        r = m.indexOf(' X XABC', 'ABC', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(3);
+        expect(r.size).toEqual(4);
+
+        r = m.indexOf(' XXABC', 'ABC', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(1);
+        expect(r.size).toEqual(5);
+
+        r = m.indexOf(' XX ABC', 'ABC', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(4);
+        expect(r.size).toEqual(3);
+
+        r = m.indexOf('XXXX XXABC', 'ABC', opts);
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(5);
+        expect(r.size).toEqual(5);
     });
 });
 
