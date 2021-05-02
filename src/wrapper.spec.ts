@@ -50,16 +50,16 @@ describe('Unit Tests', () => {
     test('Test3', () => {
         const m = new ConfusableMatcher(
             [
-                ['A', '\u{00000002}\u{00000003}'],
-                ['B', '\u{000000FA}\u{000000FF}'],
+                ['A', '\x02\x03'],
+                ['B', '\xFA\xFF'],
             ],
             [],
             true
         );
-        const r = m.indexOf('\u{00000002}\u{00000003}\u{000000FA}\u{000000FF}', 'AB');
+        const r = m.indexOf('\x02\x03\xFA\xFF', 'AB');
         expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
-        expect(r.size).toEqual(6);
+        expect(r.size).toEqual(4);
     });
 
     test('Test4', () => {
@@ -115,7 +115,7 @@ describe('Unit Tests', () => {
         const r = m.indexOf(s, 'NIGGER', { matchRepeating: true, startIndex: 0 });
 
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect((r.start == 64 && r.size == 57) || (r.start == 89 && r.size == 32)).toBeTruthy();
+        expect((r.start == 64 && r.size == 50) || (r.start == 89 && r.size == 25)).toBeTruthy();
     });
 
     test('Test8', () => {
@@ -126,8 +126,8 @@ describe('Unit Tests', () => {
             { matchRepeating: false }
         );
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(5);
-        expect(r.size).toEqual(397);
+        expect(r.start).toEqual(3);
+        expect(r.size).toEqual(253);
     });
 
     test('Test9', () => {
@@ -528,7 +528,7 @@ describe('Unit Tests', () => {
 
         r = m.indexOf('yes\uFEFFX', 'X', { ...opts });
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(6);
+        expect(r.start).toEqual(4);
         expect(r.size).toEqual(1);
     });
 
@@ -588,7 +588,7 @@ describe('Unit Tests', () => {
 
         r = m.indexOf('yes\u202FQQQ', 'Q', { ...opts });
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(6);
+        expect(r.start).toEqual(4);
         expect(r.size).toEqual(3);
     });
 
@@ -648,7 +648,7 @@ describe('Unit Tests', () => {
 
         r = m.indexOf('yes\u202FSUPER', 'SUPER', { ...opts });
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(6);
+        expect(r.start).toEqual(4);
         expect(r.size).toEqual(5);
     });
 
@@ -816,7 +816,7 @@ describe('Unit Tests', () => {
         });
         expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
-        expect(r.size).toEqual(19);
+        expect(r.size).toEqual(9);
     });
 
     test('Test43', () => {
@@ -828,7 +828,15 @@ describe('Unit Tests', () => {
         });
         expect(r.status).toEqual(EReturnStatus.MATCH);
         expect(r.start).toEqual(0);
-        expect(r.size).toEqual(19);
+        expect(r.size).toEqual(9);
+    });
+
+    test('Test44', () => {
+        const m = new ConfusableMatcher([['M', 'ⓜ']]);
+        const r = m.indexOf('SIⓜP', 'SIMP');
+        expect(r.status).toEqual(EReturnStatus.MATCH);
+        expect(r.start).toEqual(0);
+        expect(r.size).toEqual(4);
     });
 });
 

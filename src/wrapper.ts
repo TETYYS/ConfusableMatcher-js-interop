@@ -178,7 +178,30 @@ export class ConfusableMatcher {
      * @returns An object containing match information.
      */
     public indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): IResult {
-        return this._instance.indexOf(input, needle, this._fillDefaultOptions(options));
+        let utf8: Buffer | undefined;
+
+        if (typeof options?.startIndex === 'number' && options.startIndex !== 0) {
+            utf8 = Buffer.from(input);
+            options.startIndex = utf8.toString('utf-8', 0, options.startIndex).length;
+        }
+
+        const result = this._instance.indexOf(input, needle, this._fillDefaultOptions(options));
+
+        if (result.start >= 0) {
+            if (!utf8) {
+                utf8 = Buffer.from(input);
+            }
+            const start = utf8.toString('utf-8', 0, result.start);
+            const size = utf8.toString('utf-8', result.start, result.start + result.size);
+
+            return {
+                size: size.length,
+                start: start.length,
+                status: result.status,
+            };
+        }
+
+        return result;
     }
 
     /**
@@ -193,15 +216,7 @@ export class ConfusableMatcher {
         needle: string,
         options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>
     ): IResult {
-        return this._instance.indexOf(
-            input,
-            needle,
-            this._fillDefaultOptions({
-                ...options,
-                startFromEnd: true,
-                startIndex: input.length - 1,
-            })
-        );
+        return this.indexOf(input, needle, { ...options, startFromEnd: true, startIndex: input.length - 1 });
     }
 
     /**
