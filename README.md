@@ -46,6 +46,7 @@ Please PR your reported time and hardware.
 
 | Processor                 | Memory                                         | Version | Performance                              |
 | ------------------------- | ---------------------------------------------- | ------- | ---------------------------------------- |
+| AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 2.1.0   | 254,060 ops/sec ±0.75% (92 runs sampled) |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 2.0.1   | 316,975 ops/sec ±0.30% (90 runs sampled) |
 | AMD Ryzen 5 3600 6-Core   | DDR4-3200MHz CL16-18-18-38 1.35V 16GB (2x8GB)  | 2.0.1   | 307,821 ops/sec ±1.59% (89 runs sampled) |
 | Intel i5-8300H 4-Core     | DDR4-2666MHz CL23-19-19-43 1.20V 08GB (1x8GB)  | 2.0.1   | 328,581 ops/sec ±1.56% (90 runs sampled) |
