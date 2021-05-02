@@ -10,6 +10,9 @@ on:
             - .github/workflows/build.yaml
             # TypeScript
             - tsconfig*
+            # Depdendencies
+            - package.json
+            - yarn.lock
     pull_request:
         paths:
             # Source
@@ -18,6 +21,9 @@ on:
             - .github/workflows/build.yaml
             # TypeScript
             - tsconfig*
+            # Depdendencies
+            - package.json
+            - yarn.lock
 
 jobs:
     build:
