@@ -4,918 +4,945 @@ import { EReturnStatus } from './binding';
 import { ConfusableMatcher } from './wrapper';
 
 describe('Unit Tests', () => {
-    test('Test1', () => {
-        const m = new ConfusableMatcher([
-            ['N', 'T'],
-            ['I', 'E'],
-            ['C', 'S'],
-            ['E', 'T'],
-        ]);
-        const r = m.indexOfSync('TEST', 'NICE', { matchRepeating: false, startIndex: 0 });
+    describe('On Demand', () => {
+        test('Test1', () => {
+            const m = new ConfusableMatcher([
+                ['N', 'T'],
+                ['I', 'E'],
+                ['C', 'S'],
+                ['E', 'T'],
+            ]);
+            const r = m.indexOfSync('TEST', 'NICE', { matchRepeating: false, startIndex: 0 });
 
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(4);
-    });
-
-    test('Test2', () => {
-        const m = new ConfusableMatcher([
-            ['V', 'VA'],
-            ['V', 'VO'],
-        ]);
-
-        let r = m.indexOfSync('VV', 'VAVOVAVO', { matchRepeating: false, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
-        r = m.indexOfSync('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start == 0 || r.start == 4).toBeTruthy();
-        expect(r.size == 3 || r.size == 4).toBeTruthy();
-
-        r = m.indexOfSync('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 4 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(4);
-        expect(r.size == 3 || r.size == 4).toBeTruthy();
-
-        r = m.indexOfSync('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 2 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start == 2 || r.start == 4).toBeTruthy();
-        expect(r.size == 3 || r.size == 4).toBeTruthy();
-
-        r = m.indexOfSync('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 3 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(4);
-        expect(r.size == 3 || r.size == 4).toBeTruthy();
-    });
-
-    test('Test3', () => {
-        const m = new ConfusableMatcher(
-            [
-                ['A', '\x02\x03'],
-                ['B', '\xFA\xFF'],
-            ],
-            [],
-            true
-        );
-        const r = m.indexOfSync('\x02\x03\xFA\xFF', 'AB');
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(4);
-    });
-
-    test('Test4', () => {
-        const m = new ConfusableMatcher(
-            [
-                ['S', '$'],
-                ['D', '[)'],
-            ],
-            ['_', ' ']
-        );
-        const r = m.indexOfSync('A__ _ $$$[)D', 'ASD', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(11);
-    });
-
-    test('Test5', () => {
-        const m = new ConfusableMatcher([
-            ['N', '/\\/'],
-            ['N', '/\\'],
-            ['I', '/'],
-        ]);
-        const r = m.indexOfSync('/\\/CE', 'NICE', { matchRepeating: false, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
-    });
-
-    test('Test6', () => {
-        const m = new ConfusableMatcher([
-            ['N', '/\\/'],
-            ['V', '\\/'],
-            ['I', '/'],
-        ]);
-
-        let r = m.indexOfSync('I/\\/AM', 'INAN', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
-        r = m.indexOfSync('I/\\/AM', 'INAM', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(6);
-
-        r = m.indexOfSync('I/\\/AM', 'IIVAM', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(6);
-    });
-
-    test('Test7', () => {
-        const s =
-            'AAAAAAAAASSAFSAFNFNFNISFNSIFSIFJSDFUDSHF ASUF/|/__/|/___%/|/%I%%/|//|/%%%%%NNNN/|/NN__/|/N__𝘪G___%____$__G__𝓰𝘦Ѓ';
-        const m = new ConfusableMatcher(getDefaultMap(), ['_', '%', '$']);
-        const r = m.indexOfSync(s, 'NIGGER', { matchRepeating: true, startIndex: 0 });
-
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect((r.start == 64 && r.size == 50) || (r.start == 89 && r.size == 25)).toBeTruthy();
-    });
-
-    test('Test8', () => {
-        const m = new ConfusableMatcher([], ['[', ']', '̲', '̅']);
-        const r = m.indexOfSync(
-            '[̲̅a̲̅][̲̅b̲̅][̲̅c̲̅][̲̅d̲̅][̲̅e̲̅][̲̅f̲̅][̲̅g̲̅][̲̅h̲̅][̲̅i̲̅][̲̅j̲̅][̲̅k̲̅][̲̅l̲̅][̲̅m̲̅][̲̅n̲̅][̲̅o̲̅][̲̅p̲̅][̲̅q̲̅][̲̅r̲̅][̲̅s̲̅][̲̅t̲̅][̲̅u̲̅][̲̅v̲̅][̲̅w̲̅][̲̅x̲̅][̲̅y̲̅][̲̅z̲̅][̲̅0̲̅][̲̅1̲̅][̲̅2̲̅][̲̅3̲̅][̲̅4̲̅][̲̅5̲̅][̲̅6̲̅][̲̅7̲̅][̲̅8̲̅][̲̅9̲̅][̲̅0̲̅]',
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890',
-            { matchRepeating: false }
-        );
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(3);
-        expect(r.size).toEqual(253);
-    });
-
-    test('Test9', () => {
-        const m = new ConfusableMatcher([
-            ['B', 'A'],
-            ['B', 'AB'],
-            ['B', 'ABC'],
-            ['B', 'ABCD'],
-            ['B', 'ABCDE'],
-            ['B', 'ABCDEF'],
-            ['B', 'ABCDEFG'],
-            ['B', 'ABCDEFGH'],
-            ['B', 'ABCDEFGHI'],
-            ['B', 'ABCDEFGHIJ'],
-            ['B', 'ABCDEFGHIJK'],
-            ['B', 'ABCDEFGHIJKL'],
-            ['B', 'ABCDEFGHIJKLM'],
-            ['B', 'ABCDEFGHIJKLMN'],
-            ['B', 'ABCDEFGHIJKLMNO'],
-            ['B', 'ABCDEFGHIJKLMNOP'],
-            ['B', 'ABCDEFGHIJKLMNOPQ'],
-            ['B', 'ABCDEFGHIJKLMNOPQR'],
-            ['B', 'ABCDEFGHIJKLMNOPQRS'],
-        ]);
-        const r = m.indexOfSync('ABCDEFGHIJKLMNOPQRS', 'B', {
-            matchRepeating: false,
-            startFromEnd: false,
-            startIndex: 0,
-            statePushLimit: 1000,
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(4);
         });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start == 0 || r.start == 1).toBeTruthy();
-        expect(r.size).toEqual(1);
-    });
 
-    test('Test9.1', () => {
-        const m = new ConfusableMatcher([
-            ['B', 'A'],
-            ['B', 'AB'],
-            ['B', 'ABC'],
-            ['B', 'ABCD'],
-            ['B', 'ABCDE'],
-            ['B', 'ABCDEF'],
-            ['B', 'ABCDEFG'],
-            ['B', 'ABCDEFGH'],
-            ['B', 'ABCDEFGHI'],
-            ['B', 'ABCDEFGHIJ'],
-            ['B', 'ABCDEFGHIJK'],
-            ['B', 'ABCDEFGHIJKL'],
-            ['B', 'ABCDEFGHIJKLM'],
-            ['B', 'ABCDEFGHIJKLMN'],
-            ['B', 'ABCDEFGHIJKLMNO'],
-            ['B', 'ABCDEFGHIJKLMNOPQ'],
-            ['B', 'ABCDEFGHIJKLMNOPQR'],
-            ['B', 'ABCDEFGHIJKLMNOPQRS'],
-            ['B', 'PQRSTUVWXYZ0123456789'],
-            ['B', 'PQRSTUVWXYZ012345678'],
-            ['B', 'PQRSTUVWXYZ01234567'],
-            ['B', 'PQRSTUVWXYZ0123456'],
-            ['B', 'PQRSTUVWXYZ012345'],
-            ['B', 'PQRSTUVWXYZ01234'],
-            ['B', 'PQRSTUVWXYZ0123'],
-            ['B', 'PQRSTUVWXYZ012'],
-            ['B', 'PQRSTUVWXYZ01'],
-            ['B', 'PQRSTUVWXYZ0'],
-            ['B', 'PQRSTUVWXYZ'],
-            ['B', 'PQRSTUVWXY'],
-            ['B', 'PQRSTUVWX'],
-            ['B', 'PQRSTUVW'],
-            ['B', 'PQRSTUV'],
-            ['B', 'PQRSTU'],
-            ['B', 'PQRST'],
-            ['B', 'PQRS'],
-            ['B', 'PQR'],
-            ['B', 'PQ'],
-            ['B', 'P'],
-        ]);
-        let r = m.indexOfSync('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 'BB', {
-            matchRepeating: false,
-            startFromEnd: false,
-            startIndex: 0,
-            statePushLimit: 1000,
+        test('Test2', () => {
+            const m = new ConfusableMatcher([
+                ['V', 'VA'],
+                ['V', 'VO'],
+            ]);
+
+            let r = m.indexOfSync('VV', 'VAVOVAVO', { matchRepeating: false, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.NO_MATCH);
+            r = m.indexOfSync('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start == 0 || r.start == 4).toBeTruthy();
+            expect(r.size == 3 || r.size == 4).toBeTruthy();
+
+            r = m.indexOfSync('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 4 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(4);
+            expect(r.size == 3 || r.size == 4).toBeTruthy();
+
+            r = m.indexOfSync('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 2 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start == 2 || r.start == 4).toBeTruthy();
+            expect(r.size == 3 || r.size == 4).toBeTruthy();
+
+            r = m.indexOfSync('VAVOVAVO', 'VV', { matchRepeating: false, startIndex: 3 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(4);
+            expect(r.size == 3 || r.size == 4).toBeTruthy();
         });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(2);
 
-        r = m.indexOfSync(
-            'PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789',
-            'BBBBBBBBBBBBBBBBBBBBBBBBBBB',
-            {
+        test('Test3', () => {
+            const m = new ConfusableMatcher(
+                [
+                    ['A', '\x02\x03'],
+                    ['B', '\xFA\xFF'],
+                ],
+                [],
+                true
+            );
+            const r = m.indexOfSync('\x02\x03\xFA\xFF', 'AB');
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(4);
+        });
+
+        test('Test4', () => {
+            const m = new ConfusableMatcher(
+                [
+                    ['S', '$'],
+                    ['D', '[)'],
+                ],
+                ['_', ' ']
+            );
+            const r = m.indexOfSync('A__ _ $$$[)D', 'ASD', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(11);
+        });
+
+        test('Test5', () => {
+            const m = new ConfusableMatcher([
+                ['N', '/\\/'],
+                ['N', '/\\'],
+                ['I', '/'],
+            ]);
+            const r = m.indexOfSync('/\\/CE', 'NICE', { matchRepeating: false, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
+        });
+
+        test('Test6', () => {
+            const m = new ConfusableMatcher([
+                ['N', '/\\/'],
+                ['V', '\\/'],
+                ['I', '/'],
+            ]);
+
+            let r = m.indexOfSync('I/\\/AM', 'INAN', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.NO_MATCH);
+            r = m.indexOfSync('I/\\/AM', 'INAM', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(6);
+
+            r = m.indexOfSync('I/\\/AM', 'IIVAM', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(6);
+        });
+
+        test('Test7', () => {
+            const s =
+                'AAAAAAAAASSAFSAFNFNFNISFNSIFSIFJSDFUDSHF ASUF/|/__/|/___%/|/%I%%/|//|/%%%%%NNNN/|/NN__/|/N__𝘪G___%____$__G__𝓰𝘦Ѓ';
+            const m = new ConfusableMatcher(getDefaultMap(), ['_', '%', '$']);
+            const r = m.indexOfSync(s, 'NIGGER', { matchRepeating: true, startIndex: 0 });
+
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect((r.start == 64 && r.size == 50) || (r.start == 89 && r.size == 25)).toBeTruthy();
+        });
+
+        test('Test8', () => {
+            const m = new ConfusableMatcher([], ['[', ']', '̲', '̅']);
+            const r = m.indexOfSync(
+                '[̲̅a̲̅][̲̅b̲̅][̲̅c̲̅][̲̅d̲̅][̲̅e̲̅][̲̅f̲̅][̲̅g̲̅][̲̅h̲̅][̲̅i̲̅][̲̅j̲̅][̲̅k̲̅][̲̅l̲̅][̲̅m̲̅][̲̅n̲̅][̲̅o̲̅][̲̅p̲̅][̲̅q̲̅][̲̅r̲̅][̲̅s̲̅][̲̅t̲̅][̲̅u̲̅][̲̅v̲̅][̲̅w̲̅][̲̅x̲̅][̲̅y̲̅][̲̅z̲̅][̲̅0̲̅][̲̅1̲̅][̲̅2̲̅][̲̅3̲̅][̲̅4̲̅][̲̅5̲̅][̲̅6̲̅][̲̅7̲̅][̲̅8̲̅][̲̅9̲̅][̲̅0̲̅]',
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890',
+                { matchRepeating: false }
+            );
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(3);
+            expect(r.size).toEqual(253);
+        });
+
+        test('Test9', () => {
+            const m = new ConfusableMatcher([
+                ['B', 'A'],
+                ['B', 'AB'],
+                ['B', 'ABC'],
+                ['B', 'ABCD'],
+                ['B', 'ABCDE'],
+                ['B', 'ABCDEF'],
+                ['B', 'ABCDEFG'],
+                ['B', 'ABCDEFGH'],
+                ['B', 'ABCDEFGHI'],
+                ['B', 'ABCDEFGHIJ'],
+                ['B', 'ABCDEFGHIJK'],
+                ['B', 'ABCDEFGHIJKL'],
+                ['B', 'ABCDEFGHIJKLM'],
+                ['B', 'ABCDEFGHIJKLMN'],
+                ['B', 'ABCDEFGHIJKLMNO'],
+                ['B', 'ABCDEFGHIJKLMNOP'],
+                ['B', 'ABCDEFGHIJKLMNOPQ'],
+                ['B', 'ABCDEFGHIJKLMNOPQR'],
+                ['B', 'ABCDEFGHIJKLMNOPQRS'],
+            ]);
+            const r = m.indexOfSync('ABCDEFGHIJKLMNOPQRS', 'B', {
+                matchRepeating: false,
+                startFromEnd: false,
+                startIndex: 0,
+                statePushLimit: 1000,
+            });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start == 0 || r.start == 1).toBeTruthy();
+            expect(r.size).toEqual(1);
+        });
+
+        test('Test9.1', () => {
+            const m = new ConfusableMatcher([
+                ['B', 'A'],
+                ['B', 'AB'],
+                ['B', 'ABC'],
+                ['B', 'ABCD'],
+                ['B', 'ABCDE'],
+                ['B', 'ABCDEF'],
+                ['B', 'ABCDEFG'],
+                ['B', 'ABCDEFGH'],
+                ['B', 'ABCDEFGHI'],
+                ['B', 'ABCDEFGHIJ'],
+                ['B', 'ABCDEFGHIJK'],
+                ['B', 'ABCDEFGHIJKL'],
+                ['B', 'ABCDEFGHIJKLM'],
+                ['B', 'ABCDEFGHIJKLMN'],
+                ['B', 'ABCDEFGHIJKLMNO'],
+                ['B', 'ABCDEFGHIJKLMNOPQ'],
+                ['B', 'ABCDEFGHIJKLMNOPQR'],
+                ['B', 'ABCDEFGHIJKLMNOPQRS'],
+                ['B', 'PQRSTUVWXYZ0123456789'],
+                ['B', 'PQRSTUVWXYZ012345678'],
+                ['B', 'PQRSTUVWXYZ01234567'],
+                ['B', 'PQRSTUVWXYZ0123456'],
+                ['B', 'PQRSTUVWXYZ012345'],
+                ['B', 'PQRSTUVWXYZ01234'],
+                ['B', 'PQRSTUVWXYZ0123'],
+                ['B', 'PQRSTUVWXYZ012'],
+                ['B', 'PQRSTUVWXYZ01'],
+                ['B', 'PQRSTUVWXYZ0'],
+                ['B', 'PQRSTUVWXYZ'],
+                ['B', 'PQRSTUVWXY'],
+                ['B', 'PQRSTUVWX'],
+                ['B', 'PQRSTUVW'],
+                ['B', 'PQRSTUV'],
+                ['B', 'PQRSTU'],
+                ['B', 'PQRST'],
+                ['B', 'PQRS'],
+                ['B', 'PQR'],
+                ['B', 'PQ'],
+                ['B', 'P'],
+            ]);
+            let r = m.indexOfSync('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 'BB', {
+                matchRepeating: false,
+                startFromEnd: false,
+                startIndex: 0,
+                statePushLimit: 1000,
+            });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(2);
+
+            r = m.indexOfSync(
+                'PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789PQRSTUVWXYZ0123456789',
+                'BBBBBBBBBBBBBBBBBBBBBBBBBBB',
+                {
+                    matchRepeating: true,
+                    startFromEnd: false,
+                    startIndex: 0,
+                    statePushLimit: 2000,
+                }
+            );
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size >= 547 && r.size <= 567).toBeTruthy();
+        });
+
+        test('Test10', () => {
+            const m = new ConfusableMatcher();
+            let r = m.indexOfSync(':)', '', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(0);
+            r = m.indexOfSync('', ':)', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.NO_MATCH);
+        });
+
+        test('Test11', () => {
+            const m = new ConfusableMatcher([['A', 'A']]);
+            const r = m.indexOfSync('ABAAA', 'ABAR', {
                 matchRepeating: true,
                 startFromEnd: false,
                 startIndex: 0,
-                statePushLimit: 2000,
+                statePushLimit: 1000,
+            });
+            expect(r.status).toEqual(EReturnStatus.NO_MATCH);
+        });
+
+        test('Test12', () => {
+            const m = new ConfusableMatcher([]);
+            const r = m.indexOfSync('A', 'A', { matchRepeating: false, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(1);
+        });
+
+        test('Test12.1', () => {
+            const m = new ConfusableMatcher([], [], false);
+            const r = m.indexOfSync('A', 'A', { matchRepeating: false, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.NO_MATCH);
+        });
+
+        test('Test13', () => {
+            expect(() => new ConfusableMatcher([['', '?']])).toThrow();
+            expect(() => new ConfusableMatcher([['', '?']])).toThrow();
+            expect(() => new ConfusableMatcher([['?', '']])).toThrow();
+            expect(() => new ConfusableMatcher([['', '']])).toThrow();
+            expect(() => new ConfusableMatcher([['\x00', '?']])).toThrow();
+            expect(() => new ConfusableMatcher([['?', '\x00']])).toThrow();
+            expect(() => new ConfusableMatcher([['\x01', '?']])).toThrow();
+            expect(() => new ConfusableMatcher([['?', '\x01']])).toThrow();
+            expect(() => new ConfusableMatcher([['\x00', '\x01']])).toThrow();
+            expect(() => new ConfusableMatcher([['\x00', '\x00']])).toThrow();
+            expect(() => new ConfusableMatcher([['\x01', '\x00']])).toThrow();
+            expect(() => new ConfusableMatcher([['\x01', '\x01']])).toThrow();
+            expect(() => new ConfusableMatcher([['\x01\x00', '\x00\x01']])).toThrow();
+            expect(() => new ConfusableMatcher([['A\x00', '\x00A']])).toThrow();
+            expect(() => new ConfusableMatcher([['\x01\x00', '\x00\x01']])).toThrow();
+            expect(() => new ConfusableMatcher([['A\x00', 'A\x01']])).not.toThrow();
+            expect(() => new ConfusableMatcher([['A\x01', 'A\x00']])).not.toThrow();
+            expect(() => new ConfusableMatcher([['A\x00', 'A\x00']])).not.toThrow();
+            expect(() => new ConfusableMatcher([['A\x01', 'A\x01']])).not.toThrow();
+        });
+
+        test('Test14', () => {
+            const m = new ConfusableMatcher([]);
+            for (let i = 0; i < 1e3; i++) {
+                m.indexOfSync('ASD', 'ZXC', { matchRepeating: true, startIndex: 0 });
+                m.indexOfSync('ASD', 'ZXC', { matchRepeating: true, startIndex: 0 });
+                m.indexOfSync('ASD', 'ZXC', { matchRepeating: true, startIndex: 0 });
             }
-        );
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size >= 547 && r.size <= 567).toBeTruthy();
-    });
-
-    test('Test10', () => {
-        const m = new ConfusableMatcher();
-        let r = m.indexOfSync(':)', '', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(0);
-        r = m.indexOfSync('', ':)', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
-    });
-
-    test('Test11', () => {
-        const m = new ConfusableMatcher([['A', 'A']]);
-        const r = m.indexOfSync('ABAAA', 'ABAR', {
-            matchRepeating: true,
-            startFromEnd: false,
-            startIndex: 0,
-            statePushLimit: 1000,
         });
-        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
-    });
 
-    test('Test12', () => {
-        const m = new ConfusableMatcher([]);
-        const r = m.indexOfSync('A', 'A', { matchRepeating: false, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(1);
-    });
-
-    test('Test12.1', () => {
-        const m = new ConfusableMatcher([], [], false);
-        const r = m.indexOfSync('A', 'A', { matchRepeating: false, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
-    });
-
-    test('Test13', () => {
-        expect(() => new ConfusableMatcher([['', '?']])).toThrow();
-        expect(() => new ConfusableMatcher([['', '?']])).toThrow();
-        expect(() => new ConfusableMatcher([['?', '']])).toThrow();
-        expect(() => new ConfusableMatcher([['', '']])).toThrow();
-        expect(() => new ConfusableMatcher([['\x00', '?']])).toThrow();
-        expect(() => new ConfusableMatcher([['?', '\x00']])).toThrow();
-        expect(() => new ConfusableMatcher([['\x01', '?']])).toThrow();
-        expect(() => new ConfusableMatcher([['?', '\x01']])).toThrow();
-        expect(() => new ConfusableMatcher([['\x00', '\x01']])).toThrow();
-        expect(() => new ConfusableMatcher([['\x00', '\x00']])).toThrow();
-        expect(() => new ConfusableMatcher([['\x01', '\x00']])).toThrow();
-        expect(() => new ConfusableMatcher([['\x01', '\x01']])).toThrow();
-        expect(() => new ConfusableMatcher([['\x01\x00', '\x00\x01']])).toThrow();
-        expect(() => new ConfusableMatcher([['A\x00', '\x00A']])).toThrow();
-        expect(() => new ConfusableMatcher([['\x01\x00', '\x00\x01']])).toThrow();
-        expect(() => new ConfusableMatcher([['A\x00', 'A\x01']])).not.toThrow();
-        expect(() => new ConfusableMatcher([['A\x01', 'A\x00']])).not.toThrow();
-        expect(() => new ConfusableMatcher([['A\x00', 'A\x00']])).not.toThrow();
-        expect(() => new ConfusableMatcher([['A\x01', 'A\x01']])).not.toThrow();
-    });
-
-    test('Test14', () => {
-        const m = new ConfusableMatcher([]);
-        for (let i = 0; i < 1e3; i++) {
-            m.indexOfSync('ASD', 'ZXC', { matchRepeating: true, startIndex: 0 });
-            m.indexOfSync('ASD', 'ZXC', { matchRepeating: true, startIndex: 0 });
-            m.indexOfSync('ASD', 'ZXC', { matchRepeating: true, startIndex: 0 });
-        }
-    });
-
-    test('Test15', () => {
-        const m = new ConfusableMatcher([['.', '.']], ['.']);
-        const r = m.indexOfSync('FOLLOWONBOT.COM', 'FOLLOWONBOT.COM', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(15);
-    });
-
-    test('Test16', () => {
-        const m = new ConfusableMatcher([
-            ['N', '/\\/'],
-            ['N', '\\/\\'],
-        ]);
-        const r = m.indexOfSync(
-            '/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/',
-            'NNNNNNNNNNNNNNNA',
-            { matchRepeating: true, startIndex: 0 }
-        );
-        expect(r.status).toEqual(EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED);
-    });
-
-    test('Test17', () => {
-        const m = new ConfusableMatcher([
-            ['N', '_'],
-            ['N', '__'],
-        ]);
-        const r = m.indexOfSync('NNNNN__N_NN___NNNNNN_NN_N__NNNN__N_NNNNNICE', 'NIRE', {
-            matchRepeating: true,
-            startFromEnd: false,
-            startIndex: 0,
-            statePushLimit: 100000,
+        test('Test15', () => {
+            const m = new ConfusableMatcher([['.', '.']], ['.']);
+            const r = m.indexOfSync('FOLLOWONBOT.COM', 'FOLLOWONBOT.COM', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(15);
         });
-        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
-    });
 
-    test('Test18', () => {
-        const m = new ConfusableMatcher([
-            ['N', '12345'],
-            ['A', '1'],
-            ['A', '5'],
-            ['A', '234'],
-        ]);
-        const r = m.indexOfSync('N12345M', 'NAM', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(7);
-    });
+        test('Test16', () => {
+            const m = new ConfusableMatcher([
+                ['N', '/\\/'],
+                ['N', '\\/\\'],
+            ]);
+            const r = m.indexOfSync(
+                '/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/',
+                'NNNNNNNNNNNNNNNA',
+                { matchRepeating: true, startIndex: 0 }
+            );
+            expect(r.status).toEqual(EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED);
+        });
 
-    test('Test19', () => {
-        const m = new ConfusableMatcher([
-            ['A', '1'],
-            ['B', '1'],
-            ['C', '1'],
-        ]);
-        const r = m.indexOfSync('111111', 'ABC', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(3);
-    });
+        test('Test17', () => {
+            const m = new ConfusableMatcher([
+                ['N', '_'],
+                ['N', '__'],
+            ]);
+            const r = m.indexOfSync('NNNNN__N_NN___NNNNNN_NN_N__NNNN__N_NNNNNICE', 'NIRE', {
+                matchRepeating: true,
+                startFromEnd: false,
+                startIndex: 0,
+                statePushLimit: 100000,
+            });
+            expect(r.status).toEqual(EReturnStatus.NO_MATCH);
+        });
 
-    test('Test20', () => {
-        const m = new ConfusableMatcher(
-            [
+        test('Test18', () => {
+            const m = new ConfusableMatcher([
+                ['N', '12345'],
+                ['A', '1'],
+                ['A', '5'],
+                ['A', '234'],
+            ]);
+            const r = m.indexOfSync('N12345M', 'NAM', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(7);
+        });
+
+        test('Test19', () => {
+            const m = new ConfusableMatcher([
                 ['A', '1'],
                 ['B', '1'],
                 ['C', '1'],
-            ],
-            [],
-            false
-        );
-        expect('1').toEqual(m.getKeyMappings('A')[0]);
-        expect('1').toEqual(m.getKeyMappings('B')[0]);
-        expect('1').toEqual(m.getKeyMappings('C')[0]);
-    });
-
-    test('Test21', () => {
-        const m = new ConfusableMatcher(
-            [
-                ['1', 'AB'],
-                ['1', 'CD'],
-                ['2', 'EEE'],
-            ],
-            [],
-            false
-        );
-        const mappings = m.getKeyMappings('1');
-        expect(mappings[0] === 'AB' || mappings[0] === 'CD').toBeTruthy();
-        expect(mappings[1] === 'AB' || mappings[1] === 'CD').toBeTruthy();
-        expect('EEE').toEqual(m.getKeyMappings('2')[0]);
-    });
-
-    test('Test22', () => {
-        const COUNT = 500;
-        const KEY = '123';
-        const m = new ConfusableMatcher(
-            Array.from<unknown, Mapping>({ length: COUNT }, (i, x) => [KEY, x.toString()]),
-            [],
-            false
-        );
-        expect(m.getKeyMappings(KEY)).toHaveLength(COUNT);
-    });
-
-    test('Test23', () => {
-        const s = 'AA BB CC AA FF AA RR';
-        const m = new ConfusableMatcher(getDefaultMap());
-
-        let r = m.indexOfSync(s, 'AA', { matchRepeating: true });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(2);
-
-        r = m.indexOfSync(s, 'AA', { matchRepeating: true, startFromEnd: true, startIndex: s.length - 1 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(15);
-        expect(r.size).toEqual(2);
-    });
-
-    test('Test24', () => {
-        const s = 'DASD';
-        const m = new ConfusableMatcher(getDefaultMap());
-        const r = m.indexOfSync(s, 'D', { matchRepeating: true, startFromEnd: true, startIndex: s.length - 1 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(3);
-        expect(r.size).toEqual(1);
-    });
-
-    test('Test25', () => {
-        const s = 'ASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASB';
-        const m = new ConfusableMatcher(getDefaultMap());
-
-        let r = m.indexOfSync(s, 'ASB', {
-            matchRepeating: true,
-            startFromEnd: false,
-            startIndex: 0,
-            statePushLimit: 20,
+            ]);
+            const r = m.indexOfSync('111111', 'ABC', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(3);
         });
-        expect(r.status).toEqual(EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED);
 
-        r = m.indexOfSync(s, 'ASB', {
-            matchRepeating: true,
-            startFromEnd: true,
-            startIndex: s.length - 1,
-            statePushLimit: 20,
+        test('Test20', () => {
+            const m = new ConfusableMatcher(
+                [
+                    ['A', '1'],
+                    ['B', '1'],
+                    ['C', '1'],
+                ],
+                [],
+                false
+            );
+            expect('1').toEqual(m.getKeyMappings('A')[0]);
+            expect('1').toEqual(m.getKeyMappings('B')[0]);
+            expect('1').toEqual(m.getKeyMappings('C')[0]);
         });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(92);
-        expect(r.size).toEqual(3);
-    });
 
-    test('Test26', () => {
-        const m = new ConfusableMatcher(getDefaultMap());
-        const r = m.indexOfSync('AAA', 'A', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(3);
-    });
-
-    test('Test27', () => {
-        const m = new ConfusableMatcher(getDefaultMap());
-        const r = m.indexOfSync('BB AAA', 'A', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(3);
-        expect(r.size).toEqual(3);
-    });
-
-    test('Test28', () => {
-        const m = new ConfusableMatcher(getDefaultMap());
-        const r = m.indexOfSync('N|\\|NC', 'N', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
-    });
-
-    test('Test29', () => {
-        const m = new ConfusableMatcher([
-            ['N', '/\\/'],
-            ['N', '//A'],
-            ['N', '//'],
-        ]);
-        const r = m.indexOfSync('N/\\///AN', 'N', { matchRepeating: true, startIndex: 0 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(8);
-    });
-
-    test('Test30', () => {
-        const m = new ConfusableMatcher([['N', '/']]);
-        const r = m.indexOfSync('N////////////////////////////////////////////////', 'N', {
-            matchRepeating: true,
-            startFromEnd: false,
-            startIndex: 0,
-            statePushLimit: 60,
+        test('Test21', () => {
+            const m = new ConfusableMatcher(
+                [
+                    ['1', 'AB'],
+                    ['1', 'CD'],
+                    ['2', 'EEE'],
+                ],
+                [],
+                false
+            );
+            const mappings = m.getKeyMappings('1');
+            expect(mappings[0] === 'AB' || mappings[0] === 'CD').toBeTruthy();
+            expect(mappings[1] === 'AB' || mappings[1] === 'CD').toBeTruthy();
+            expect('EEE').toEqual(m.getKeyMappings('2')[0]);
         });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toBeGreaterThan(10);
-    });
 
-    test('Test31', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher();
+        test('Test22', () => {
+            const COUNT = 500;
+            const KEY = '123';
+            const m = new ConfusableMatcher(
+                Array.from<unknown, Mapping>({ length: COUNT }, (i, x) => [KEY, x.toString()]),
+                [],
+                false
+            );
+            expect(m.getKeyMappings(KEY)).toHaveLength(COUNT);
+        });
 
-        let r = m.indexOfSync('X', 'X', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(1);
+        test('Test23', () => {
+            const s = 'AA BB CC AA FF AA RR';
+            const m = new ConfusableMatcher(getDefaultMap());
 
-        r = m.indexOfSync('aX', 'X', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
-        expect(r.start).toEqual(1);
-        expect(r.size).toEqual(1);
+            let r = m.indexOfSync(s, 'AA', { matchRepeating: true });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(2);
 
-        r = m.indexOfSync('Xa', 'X', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(1);
+            r = m.indexOfSync(s, 'AA', { matchRepeating: true, startFromEnd: true, startIndex: s.length - 1 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(15);
+            expect(r.size).toEqual(2);
+        });
 
-        r = m.indexOfSync('a X', 'X', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(1);
+        test('Test24', () => {
+            const s = 'DASD';
+            const m = new ConfusableMatcher(getDefaultMap());
+            const r = m.indexOfSync(s, 'D', { matchRepeating: true, startFromEnd: true, startIndex: s.length - 1 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(3);
+            expect(r.size).toEqual(1);
+        });
 
-        r = m.indexOfSync('X a', 'X', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(1);
+        test('Test25', () => {
+            const s = 'ASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASASB';
+            const m = new ConfusableMatcher(getDefaultMap());
 
-        r = m.indexOfSync('X;duper', 'X', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(1);
+            let r = m.indexOfSync(s, 'ASB', {
+                matchRepeating: true,
+                startFromEnd: false,
+                startIndex: 0,
+                statePushLimit: 20,
+            });
+            expect(r.status).toEqual(EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED);
 
-        r = m.indexOfSync('yes\uFEFFX', 'X', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(4);
-        expect(r.size).toEqual(1);
-    });
+            r = m.indexOfSync(s, 'ASB', {
+                matchRepeating: true,
+                startFromEnd: true,
+                startIndex: s.length - 1,
+                statePushLimit: 20,
+            });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(92);
+            expect(r.size).toEqual(3);
+        });
 
-    test('Test32', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher();
+        test('Test26', () => {
+            const m = new ConfusableMatcher(getDefaultMap());
+            const r = m.indexOfSync('AAA', 'A', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(3);
+        });
 
-        let r = m.indexOfSync('QQQ', 'Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(3);
+        test('Test27', () => {
+            const m = new ConfusableMatcher(getDefaultMap());
+            const r = m.indexOfSync('BB AAA', 'A', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(3);
+            expect(r.size).toEqual(3);
+        });
 
-        r = m.indexOfSync('aQQQ', 'Q', { ...opts });
-        expect(
-            r.status === EReturnStatus.WORD_BOUNDARY_FAIL_START || r.status === EReturnStatus.WORD_BOUNDARY_FAIL_END
-        ).toBeTruthy();
-        expect(
-            (r.start === 1 && r.size === 1) ||
-                (r.start === 1 && r.size === 2) ||
-                (r.start === 1 && r.size === 3) ||
-                (r.start === 2 && r.size === 1) ||
-                (r.start === 2 && r.size === 2) ||
-                (r.start === 3 && r.size === 1)
-        ).toBeTruthy();
+        test('Test28', () => {
+            const m = new ConfusableMatcher(getDefaultMap());
+            const r = m.indexOfSync('N|\\|NC', 'N', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
+        });
 
-        r = m.indexOfSync('QQQa', 'Q', { ...opts });
-        expect(
-            r.status === EReturnStatus.WORD_BOUNDARY_FAIL_START || r.status === EReturnStatus.WORD_BOUNDARY_FAIL_END
-        ).toBeTruthy();
-        expect(
-            (r.start === 0 && r.size === 1) ||
-                (r.start === 0 && r.size === 2) ||
-                (r.start === 0 && r.size === 3) ||
+        test('Test29', () => {
+            const m = new ConfusableMatcher([
+                ['N', '/\\/'],
+                ['N', '//A'],
+                ['N', '//'],
+            ]);
+            const r = m.indexOfSync('N/\\///AN', 'N', { matchRepeating: true, startIndex: 0 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(8);
+        });
+
+        test('Test30', () => {
+            const m = new ConfusableMatcher([['N', '/']]);
+            const r = m.indexOfSync('N////////////////////////////////////////////////', 'N', {
+                matchRepeating: true,
+                startFromEnd: false,
+                startIndex: 0,
+                statePushLimit: 60,
+            });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toBeGreaterThan(10);
+        });
+
+        test('Test31', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher();
+
+            let r = m.indexOfSync('X', 'X', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(1);
+
+            r = m.indexOfSync('aX', 'X', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
+            expect(r.start).toEqual(1);
+            expect(r.size).toEqual(1);
+
+            r = m.indexOfSync('Xa', 'X', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(1);
+
+            r = m.indexOfSync('a X', 'X', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(2);
+            expect(r.size).toEqual(1);
+
+            r = m.indexOfSync('X a', 'X', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(1);
+
+            r = m.indexOfSync('X;duper', 'X', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(1);
+
+            r = m.indexOfSync('yes\uFEFFX', 'X', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(4);
+            expect(r.size).toEqual(1);
+        });
+
+        test('Test32', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher();
+
+            let r = m.indexOfSync('QQQ', 'Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(3);
+
+            r = m.indexOfSync('aQQQ', 'Q', { ...opts });
+            expect(
+                r.status === EReturnStatus.WORD_BOUNDARY_FAIL_START || r.status === EReturnStatus.WORD_BOUNDARY_FAIL_END
+            ).toBeTruthy();
+            expect(
                 (r.start === 1 && r.size === 1) ||
-                (r.start === 1 && r.size === 2) ||
-                (r.start === 2 && r.size === 1)
-        ).toBeTruthy();
+                    (r.start === 1 && r.size === 2) ||
+                    (r.start === 1 && r.size === 3) ||
+                    (r.start === 2 && r.size === 1) ||
+                    (r.start === 2 && r.size === 2) ||
+                    (r.start === 3 && r.size === 1)
+            ).toBeTruthy();
 
-        r = m.indexOfSync('a QQQ', 'Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(3);
+            r = m.indexOfSync('QQQa', 'Q', { ...opts });
+            expect(
+                r.status === EReturnStatus.WORD_BOUNDARY_FAIL_START || r.status === EReturnStatus.WORD_BOUNDARY_FAIL_END
+            ).toBeTruthy();
+            expect(
+                (r.start === 0 && r.size === 1) ||
+                    (r.start === 0 && r.size === 2) ||
+                    (r.start === 0 && r.size === 3) ||
+                    (r.start === 1 && r.size === 1) ||
+                    (r.start === 1 && r.size === 2) ||
+                    (r.start === 2 && r.size === 1)
+            ).toBeTruthy();
 
-        r = m.indexOfSync('QQQ a', 'Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(3);
+            r = m.indexOfSync('a QQQ', 'Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(2);
+            expect(r.size).toEqual(3);
 
-        r = m.indexOfSync('QQQ;duper', 'Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(3);
+            r = m.indexOfSync('QQQ a', 'Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(3);
 
-        r = m.indexOfSync('yes\u202FQQQ', 'Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(4);
-        expect(r.size).toEqual(3);
-    });
+            r = m.indexOfSync('QQQ;duper', 'Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(3);
 
-    test('Test33', () => {
-        const input = 'a QBQQ';
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            startFromEnd: true,
-            startIndex: input.length - 1,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher([], ['B']);
+            r = m.indexOfSync('yes\u202FQQQ', 'Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(4);
+            expect(r.size).toEqual(3);
+        });
 
-        const r = m.indexOfSync(input, 'Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(4);
-    });
+        test('Test33', () => {
+            const input = 'a QBQQ';
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                startFromEnd: true,
+                startIndex: input.length - 1,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher([], ['B']);
 
-    test('Test34', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher();
+            const r = m.indexOfSync(input, 'Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(2);
+            expect(r.size).toEqual(4);
+        });
 
-        let r = m.indexOfSync('SUPER', 'SUPER', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
+        test('Test34', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher();
 
-        r = m.indexOfSync('aSUPER', 'SUPER', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
-        expect(r.start).toEqual(1);
-        expect(r.size).toEqual(5);
+            let r = m.indexOfSync('SUPER', 'SUPER', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
 
-        r = m.indexOfSync('SUPERa', 'SUPER', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
+            r = m.indexOfSync('aSUPER', 'SUPER', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
+            expect(r.start).toEqual(1);
+            expect(r.size).toEqual(5);
 
-        r = m.indexOfSync('a SUPER', 'SUPER', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(5);
+            r = m.indexOfSync('SUPERa', 'SUPER', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
 
-        r = m.indexOfSync('SUPER a', 'SUPER', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
+            r = m.indexOfSync('a SUPER', 'SUPER', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(2);
+            expect(r.size).toEqual(5);
 
-        r = m.indexOfSync('SUPER;duper', 'SUPER', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
+            r = m.indexOfSync('SUPER a', 'SUPER', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
 
-        r = m.indexOfSync('yes\u202FSUPER', 'SUPER', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(4);
-        expect(r.size).toEqual(5);
-    });
+            r = m.indexOfSync('SUPER;duper', 'SUPER', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
 
-    test('Test35', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher([[' ', ' ']], [' ']);
+            r = m.indexOfSync('yes\u202FSUPER', 'SUPER', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(4);
+            expect(r.size).toEqual(5);
+        });
 
-        let r = m.indexOfSync('a Q Q f', 'Q Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(3);
+        test('Test35', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher([[' ', ' ']], [' ']);
 
-        r = m.indexOfSync('aQ Q f', 'Q Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
-        expect(r.start).toEqual(1);
-        expect(r.size).toEqual(3);
+            let r = m.indexOfSync('a Q Q f', 'Q Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(2);
+            expect(r.size).toEqual(3);
 
-        r = m.indexOfSync('a Q Qf', 'Q Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(3);
-    });
+            r = m.indexOfSync('aQ Q f', 'Q Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_START);
+            expect(r.start).toEqual(1);
+            expect(r.size).toEqual(3);
 
-    test('Test36', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher([[' ', ' ']], [' ']);
+            r = m.indexOfSync('a Q Qf', 'Q Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.WORD_BOUNDARY_FAIL_END);
+            expect(r.start).toEqual(2);
+            expect(r.size).toEqual(3);
+        });
 
-        const r = m.indexOfSync('a Q Q Q f', 'Q Q', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start == 2 || r.start == 3).toBeTruthy();
-        expect(r.size == 3 || r.size == 4).toBeTruthy();
-    });
+        test('Test36', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher([[' ', ' ']], [' ']);
 
-    test('Test37', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher([
-            ['a', 'a'],
-            ['s', 's'],
-            [' ', ' '],
-            ['i', 'i'],
-            ['m', 'm'],
-            ['p', 'p'],
-        ]);
+            const r = m.indexOfSync('a Q Q Q f', 'Q Q', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start == 2 || r.start == 3).toBeTruthy();
+            expect(r.size == 3 || r.size == 4).toBeTruthy();
+        });
 
-        const r = m.indexOfSync('as simp', 'simp', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(3);
-        expect(r.size).toEqual(4);
-    });
-
-    test('Test38', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher();
-
-        let r = m.indexOfSync('a', '', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(0);
-
-        r = m.indexOfSync('', '', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(0);
-
-        r = m.indexOfSync('', 'a', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.NO_MATCH);
-    });
-
-    test('Test39', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher([], ['f']);
-
-        let r = m.indexOfSync('AABC', 'ABC', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(4);
-
-        r = m.indexOfSync('AfABC', 'ABC', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
-
-        r = m.indexOfSync('ABCC', 'ABC', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(4);
-
-        r = m.indexOfSync('ABCfC', 'ABC', { ...opts });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-    });
-
-    test('Test40', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            startFromEnd: true,
-            statePushLimit: 50_000,
-        };
-        const m = new ConfusableMatcher([], ['f']);
-
-        let r = m.indexOfSync('AABC', 'ABC', { ...opts, startIndex: 3 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(4);
-
-        r = m.indexOfSync('AfABC', 'ABC', { ...opts, startIndex: 4 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
-
-        r = m.indexOfSync('ABCC', 'ABC', { ...opts, startIndex: 3 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(4);
-
-        r = m.indexOfSync('ABCfC', 'ABC', { ...opts, startIndex: 4 });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
-    });
-
-    test('Test41', () => {
-        const m = new ConfusableMatcher(
-            [
+        test('Test37', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher([
+                ['a', 'a'],
                 ['s', 's'],
-                ['i', '1'],
+                [' ', ' '],
+                ['i', 'i'],
                 ['m', 'm'],
                 ['p', 'p'],
-            ],
-            [' ']
-        );
-        const r = m.indexOfSync('agdhsjs s 1 mmm ppps dhsjdhsd', 'simps', {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            statePushLimit: 50000,
+            ]);
+
+            const r = m.indexOfSync('as simp', 'simp', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(3);
+            expect(r.size).toEqual(4);
         });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(8);
-        expect(r.size).toEqual(12);
-    });
 
-    test('Test42', () => {
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            statePushLimit: 50000,
-        };
-        let m = new ConfusableMatcher([], ['░']);
-        let r = m.indexOfSync('░S░I░M░P░', 'SIMP', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(1);
-        expect(r.size).toEqual(7);
+        test('Test38', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher();
 
-        m = new ConfusableMatcher([], ['Ž']);
-        r = m.indexOfSync('ŽSŽIŽMŽPŽ', 'SIMP', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(1);
-        expect(r.size).toEqual(8);
-    });
+            let r = m.indexOfSync('a', '', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(0);
 
-    test('Test43', () => {
-        const map: Mapping[] = [
-            ['S', '░'],
-            ['S', 'Ž'],
-        ];
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            statePushLimit: 50000,
-        };
-        let m = new ConfusableMatcher(map, ['░']);
-        let r = m.indexOfSync('░S░I░M░P░', 'SIMP', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(8);
+            r = m.indexOfSync('', '', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(0);
 
-        m = new ConfusableMatcher(map, ['Ž']);
-        r = m.indexOfSync('ŽSŽIŽMŽPŽ', 'SIMP', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(9);
-    });
-
-    test('Test44', () => {
-        const m = new ConfusableMatcher([[' ', ' ']]);
-        const r = m.indexOfSync('A  B', ' B', {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            statePushLimit: 50000,
+            r = m.indexOfSync('', 'a', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.NO_MATCH);
         });
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(2);
+
+        test('Test39', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher([], ['f']);
+
+            let r = m.indexOfSync('AABC', 'ABC', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(4);
+
+            r = m.indexOfSync('AfABC', 'ABC', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
+
+            r = m.indexOfSync('ABCC', 'ABC', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(4);
+
+            r = m.indexOfSync('ABCfC', 'ABC', { ...opts });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+        });
+
+        test('Test40', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                startFromEnd: true,
+                statePushLimit: 50_000,
+            };
+            const m = new ConfusableMatcher([], ['f']);
+
+            let r = m.indexOfSync('AABC', 'ABC', { ...opts, startIndex: 3 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(4);
+
+            r = m.indexOfSync('AfABC', 'ABC', { ...opts, startIndex: 4 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
+
+            r = m.indexOfSync('ABCC', 'ABC', { ...opts, startIndex: 3 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(4);
+
+            r = m.indexOfSync('ABCfC', 'ABC', { ...opts, startIndex: 4 });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(5);
+        });
+
+        test('Test41', () => {
+            const m = new ConfusableMatcher(
+                [
+                    ['s', 's'],
+                    ['i', '1'],
+                    ['m', 'm'],
+                    ['p', 'p'],
+                ],
+                [' ']
+            );
+            const r = m.indexOfSync('agdhsjs s 1 mmm ppps dhsjdhsd', 'simps', {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                statePushLimit: 50000,
+            });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(8);
+            expect(r.size).toEqual(12);
+        });
+
+        test('Test42', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                statePushLimit: 50000,
+            };
+            let m = new ConfusableMatcher([], ['░']);
+            let r = m.indexOfSync('░S░I░M░P░', 'SIMP', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(1);
+            expect(r.size).toEqual(7);
+
+            m = new ConfusableMatcher([], ['Ž']);
+            r = m.indexOfSync('ŽSŽIŽMŽPŽ', 'SIMP', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(1);
+            expect(r.size).toEqual(8);
+        });
+
+        test('Test43', () => {
+            const map: Mapping[] = [
+                ['S', '░'],
+                ['S', 'Ž'],
+            ];
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                statePushLimit: 50000,
+            };
+            let m = new ConfusableMatcher(map, ['░']);
+            let r = m.indexOfSync('░S░I░M░P░', 'SIMP', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(8);
+
+            m = new ConfusableMatcher(map, ['Ž']);
+            r = m.indexOfSync('ŽSŽIŽMŽPŽ', 'SIMP', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(9);
+        });
+
+        test('Test44', () => {
+            const m = new ConfusableMatcher([[' ', ' ']]);
+            const r = m.indexOfSync('A  B', ' B', {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                statePushLimit: 50000,
+            });
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(2);
+            expect(r.size).toEqual(2);
+        });
+
+        test('Test44.1', () => {
+            const m = new ConfusableMatcher([['M', 'ⓜ']]);
+            const r = m.indexOfSync('SIⓜP', 'SIMP');
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(0);
+            expect(r.size).toEqual(4);
+        });
+
+        test('Test45', () => {
+            const m = new ConfusableMatcher([], ['X']);
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                statePushLimit: 50000,
+            };
+
+            let r = m.indexOfSync('XXABC', 'ABC', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(2);
+            expect(r.size).toEqual(3);
+
+            r = m.indexOfSync('X XABC', 'ABC', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(3);
+            expect(r.size).toEqual(3);
+
+            r = m.indexOfSync('X૰XABC', 'ABC', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(3);
+            expect(r.size).toEqual(3);
+
+            r = m.indexOfSync(' X XABC', 'ABC', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(4);
+            expect(r.size).toEqual(3);
+
+            r = m.indexOfSync(' XXABC', 'ABC', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(3);
+            expect(r.size).toEqual(3);
+
+            r = m.indexOfSync(' XX ABC', 'ABC', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(4);
+            expect(r.size).toEqual(3);
+
+            r = m.indexOfSync('XXXX XXABC', 'ABC', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(7);
+            expect(r.size).toEqual(3);
+        });
     });
 
-    test('Test44.1', () => {
-        const m = new ConfusableMatcher([['M', 'ⓜ']]);
-        const r = m.indexOfSync('SIⓜP', 'SIMP');
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(4);
-    });
+    describe('Pre-Computed', () => {
+        test('Test1', () => {
+            let m = new ConfusableMatcher([], ['░']);
+            const needle = 'SIMP';
+            const needlePtr = m.computeStringPosPointers(needle);
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                needlePosPointers: needlePtr,
+                statePushLimit: 50000,
+            };
+            let r = m.indexOfSync('░S░I░M░P░', needle, opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(1);
+            expect(r.size).toEqual(7);
 
-    test('Test45', () => {
-        const m = new ConfusableMatcher([], ['X']);
-        const opts: Partial<IIndexOfOptions> = {
-            matchOnWordBoundary: true,
-            matchRepeating: true,
-            statePushLimit: 50000,
-        };
-
-        let r = m.indexOfSync('XXABC', 'ABC', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(3);
-
-        r = m.indexOfSync('X XABC', 'ABC', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(3);
-        expect(r.size).toEqual(3);
-
-        r = m.indexOfSync('X૰XABC', 'ABC', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(3);
-        expect(r.size).toEqual(3);
-
-        r = m.indexOfSync(' X XABC', 'ABC', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(4);
-        expect(r.size).toEqual(3);
-
-        r = m.indexOfSync(' XXABC', 'ABC', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(3);
-        expect(r.size).toEqual(3);
-
-        r = m.indexOfSync(' XX ABC', 'ABC', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(4);
-        expect(r.size).toEqual(3);
-
-        r = m.indexOfSync('XXXX XXABC', 'ABC', opts);
-        expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(7);
-        expect(r.size).toEqual(3);
+            m = new ConfusableMatcher([], ['Ž']);
+            r = m.indexOfSync('ŽSŽIŽMŽPŽ', needle, opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+            expect(r.start).toEqual(1);
+            expect(r.size).toEqual(8);
+            m.freeStringPosPointers(needlePtr);
+        });
     });
 });
 
