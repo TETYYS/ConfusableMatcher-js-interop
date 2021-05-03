@@ -22,7 +22,7 @@
         "\\(#.+?\\)",
         "/\\S+\\.(?:com|net|org)/"
     ],
-    "words": ["TETYYS", "NAPI", "Ryzen"],
+    "words": ["TETYYS", "NAPI", "Ryzen", "microtasks"],
     "overrides": [
         {
             "filename": "**/*.{ts,js}",
