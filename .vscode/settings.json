@@ -8,6 +8,7 @@
     "eslint.packageManager": "yarn",
 
     "files.trimTrailingWhitespace": false,
+    "files.eol": "\n",
 
     "editor.codeActionsOnSave": {
         "source.fixAll": true
@@ -96,7 +97,11 @@
         "thread": "cpp",
         "typeindex": "cpp",
         "typeinfo": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "csetjmp": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "cfenv": "cpp"
     },
 
     "git.detectSubmodules": false

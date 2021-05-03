@@ -2,31 +2,37 @@
 
 This library exports a wrapper class bundled with TypeScript declarations that allows you to use the C++ ConfusableMatcher inside your JavaScript (NodeJS/CommonJS) applications.
 
--   [Installation](#installation)
--   [Usage](#usage)
-    -   [new ConfusableMatcher()](#new-confusablematcher)
-        -   [addMapping(key, value): void](#addmappingkey-value-void)
-        -   [addMappings(mappings): void](#addmappingsmappings-void)
-        -   [removeMapping(key, value): void](#removemappingkey-value-void)
-        -   [removeMappings(mappings): void](#removemappingsmappings-void)
-        -   [getMappings(): Mapping[]](#getmappings-mapping)
-        -   [getKeyMappings(value): string[]](#getkeymappingsvalue-string)
-        -   [addSkip(skip): void](#addskipskip-void)
-        -   [addSkips(skips): void](#addskipsskips-void)
-        -   [removeSkip(skip): void](#removeskipskip-void)
-        -   [removeSkips(skips): void](#removeskipsskips-void)
-        -   [getSkips(): string[]](#getskips-string)
-        -   [indexOfSync(input, needle, options): IResult](#indexofinput-needle-options-iresult)
-        -   [indexOf(input, needle, options): Promise\<IResult\>](#indexofasyncinput-needle-options-promiseiresult)
-        -   [lastIndexOfSync(input, needle, options): IResult](#lastindexofinput-needle-options-iresult)
-        -   [lastIndexOf(input, needle, options): Promise\<IResult\>](#lastindexofasyncinput-needle-options-promiseiresult)
-        -   [containsSync(input, needle, options): boolean](#containsinput-needle-options-boolean)
-        -   [contains(input, needle, options?): Promise\<boolean\>](#containsasyncinput-needle-options-promiseboolean)
--   [Development](#development)
-    -   [Testing](#testing)
-    -   [Benchmarks](#benchmarks)
+<!-- TOC depthFrom:2 -->
 
-## Installation
+-   [1. Installation](#1-installation)
+-   [2. Usage](#2-usage)
+    -   [2.1. new ConfusableMatcher()](#21-new-confusablematcher)
+        -   [2.1.1. addMapping(key, value): void](#211-addmappingkey-value-void)
+        -   [2.1.2. addMappings(mappings): void](#212-addmappingsmappings-void)
+        -   [2.1.3. removeMapping(key, value): void](#213-removemappingkey-value-void)
+        -   [2.1.4. removeMappings(mappings): void](#214-removemappingsmappings-void)
+        -   [2.1.5. getMappings(): Mapping[]](#215-getmappings-mapping)
+        -   [2.1.6. getKeyMappings(value): string[]](#216-getkeymappingsvalue-string)
+        -   [2.1.7. addSkip(skip): void](#217-addskipskip-void)
+        -   [2.1.8. addSkips(skips): void](#218-addskipsskips-void)
+        -   [2.1.9. removeSkip(skip): void](#219-removeskipskip-void)
+        -   [2.1.10. removeSkips(skips): void](#2110-removeskipsskips-void)
+        -   [2.1.11. getSkips(): string[]](#2111-getskips-string)
+        -   [2.1.12. computeStringPosPointers(needle): number](#2112-computestringpospointersneedle-number)
+        -   [2.1.13. freeStringPosPointers(pointer): void](#2113-freestringpospointerspointer-void)
+        -   [2.1.14. indexOfSync(input, needle, options): IResult](#2114-indexofsyncinput-needle-options-iresult)
+        -   [2.1.15. indexOf(input, needle, options): Promise<IResult>](#2115-indexofinput-needle-options-promiseiresult)
+        -   [2.1.16. lastIndexOfSync(input, needle, options): IResult](#2116-lastindexofsyncinput-needle-options-iresult)
+        -   [2.1.17. lastIndexOf(input, needle, options): Promise<IResult>](#2117-lastindexofinput-needle-options-promiseiresult)
+        -   [2.1.18. containsSync(input, needle, options): boolean](#2118-containssyncinput-needle-options-boolean)
+        -   [2.1.19. contains(input, needle, options?): Promise<boolean>](#2119-containsinput-needle-options-promiseboolean)
+-   [3. Development](#3-development)
+    -   [3.1. Testing](#31-testing)
+    -   [3.2. Benchmarks](#32-benchmarks)
+
+<!-- /TOC -->
+
+## 1. Installation
 
 **To install this module, CMake v3.0 or higher must be present on the system.**
 
@@ -34,7 +40,7 @@ This library exports a wrapper class bundled with TypeScript declarations that a
 yarn add confusablematcher-js-interop
 ```
 
-## Usage
+## 2. Usage
 
 The example below shows explicit typings which are not necessary, and can be inferred, but highlights the types you may wish to use in your application.
 
@@ -66,7 +72,7 @@ const status: EReturnStatus = result.status;
 
 **Keep in mind more threads is more context switches, setting a higher thread count that core count will not give you insane performance - you will have to tune your application for it's runtime environment.**
 
-### new ConfusableMatcher()
+### 2.1. new ConfusableMatcher()
 
 ```ts
 /**
@@ -77,7 +83,7 @@ const status: EReturnStatus = result.status;
 new ConfusableMatcher(maps: Mapping[] = [], skips: Iterable<string> = [], addDefaultValues = true)
 ```
 
-#### addMapping(key, value): void
+#### 2.1.1. addMapping(key, value): void
 
 ```ts
 /**
@@ -88,7 +94,7 @@ new ConfusableMatcher(maps: Mapping[] = [], skips: Iterable<string> = [], addDef
 addMapping(key: string, value: string): void
 ```
 
-#### addMappings(mappings): void
+#### 2.1.2. addMappings(mappings): void
 
 ```ts
 /**
@@ -98,7 +104,7 @@ addMapping(key: string, value: string): void
 addMappings(mappings: Iterable<Mapping>): void
 ```
 
-#### removeMapping(key, value): void
+#### 2.1.3. removeMapping(key, value): void
 
 ```ts
 /**
@@ -109,7 +115,7 @@ addMappings(mappings: Iterable<Mapping>): void
 removeMapping(key: string, value: string): void
 ```
 
-#### removeMappings(mappings): void
+#### 2.1.4. removeMappings(mappings): void
 
 ```ts
 /**
@@ -119,7 +125,7 @@ removeMapping(key: string, value: string): void
 removeMappings(mappings: Mapping[]): void
 ```
 
-#### getMappings(): Mapping[]
+#### 2.1.5. getMappings(): Mapping[]
 
 ```ts
 /**
@@ -128,7 +134,7 @@ removeMappings(mappings: Mapping[]): void
 getMappings(): Mapping[]
 ```
 
-#### getKeyMappings(value): string[]
+#### 2.1.6. getKeyMappings(value): string[]
 
 This method returns all of the mappings for a target value.
 For example: using the map `['Z', 'Ž']` and calling `getKeyMappings('Ž')` would return `['Z'].`
@@ -140,7 +146,7 @@ For example: using the map `['Z', 'Ž']` and calling `getKeyMappings('Ž')` woul
 getKeyMappings(value: string): string[]
 ```
 
-#### addSkip(skip): void
+#### 2.1.7. addSkip(skip): void
 
 ```ts
 /**
@@ -150,7 +156,7 @@ getKeyMappings(value: string): string[]
 addSkip(skip: string): void
 ```
 
-#### addSkips(skips): void
+#### 2.1.8. addSkips(skips): void
 
 ```ts
 /**
@@ -160,7 +166,7 @@ addSkip(skip: string): void
 addSkips(skips: string[]): void
 ```
 
-#### removeSkip(skip): void
+#### 2.1.9. removeSkip(skip): void
 
 ```ts
 /**
@@ -170,7 +176,7 @@ addSkips(skips: string[]): void
 removeSkip(skip: string): void
 ```
 
-#### removeSkips(skips): void
+#### 2.1.10. removeSkips(skips): void
 
 ```ts
 /**
@@ -180,7 +186,7 @@ removeSkip(skip: string): void
 removeSkips(skips: string[]): void
 ```
 
-#### getSkips(): string[]
+#### 2.1.11. getSkips(): string[]
 
 ```ts
 /**
@@ -189,7 +195,29 @@ removeSkips(skips: string[]): void
 getSkips(): string[]
 ```
 
-#### indexOfSync(input, needle, options): IResult
+#### 2.1.12. computeStringPosPointers(needle): number
+
+```ts
+/**
+ * @description Pre-computes a needle as a tree structure internally for faster matching.
+ * If this is used, manual memory cleanup through `freeStringPosPointers` is required.
+ * @param needle The needle to build a tree for.
+ * @returns A pointer value as int64 (number).
+ */
+computeStringPosPointers(needle: string): number
+```
+
+#### 2.1.13. freeStringPosPointers(pointer): void
+
+```ts
+/**
+ * @description Frees the memory used by a precomputed needle.
+ * @param pointer An int64 pointer value returned from `computeStringPosPointers`.
+ */
+freeStringPosPointers(pointer: number): void
+```
+
+#### 2.1.14. indexOfSync(input, needle, options): IResult
 
 ```ts
 /**
@@ -202,7 +230,7 @@ getSkips(): string[]
 indexOfSync(input: string, needle: string, options?: Partial<IIndexOfOptions>): IResult
 ```
 
-#### indexOf(input, needle, options): Promise<IResult>
+#### 2.1.15. indexOf(input, needle, options): Promise<IResult>
 
 ```ts
 /**
@@ -215,7 +243,7 @@ indexOfSync(input: string, needle: string, options?: Partial<IIndexOfOptions>): 
 indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): Promise<IResult>
 ```
 
-#### lastIndexOfSync(input, needle, options): IResult
+#### 2.1.16. lastIndexOfSync(input, needle, options): IResult
 
 ```ts
 /**
@@ -228,7 +256,7 @@ indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): Prom
 lastIndexOfSync(input: string, needle: string, options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>): IResult
 ```
 
-#### lastIndexOf(input, needle, options): Promise<IResult>
+#### 2.1.17. lastIndexOf(input, needle, options): Promise<IResult>
 
 ```ts
 /**
@@ -241,7 +269,7 @@ lastIndexOfSync(input: string, needle: string, options?: Omit<Partial<IIndexOfOp
 lastIndexOf(input: string, needle: string, options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>): Promise<IResult>
 ```
 
-#### containsSync(input, needle, options): boolean
+#### 2.1.18. containsSync(input, needle, options): boolean
 
 ```ts
 /**
@@ -253,7 +281,7 @@ lastIndexOf(input: string, needle: string, options?: Omit<Partial<IIndexOfOption
 containsSync(input: string, needle: string, options?: IIndexOfOptions): boolean
 ```
 
-#### contains(input, needle, options?): Promise<boolean>
+#### 2.1.19. contains(input, needle, options?): Promise<boolean>
 
 ```ts
 /**
@@ -265,7 +293,7 @@ containsSync(input: string, needle: string, options?: IIndexOfOptions): boolean
 contains(input: string, needle: string, options?: IIndexOfOptions): Promise<boolean>
 ```
 
-## Development
+## 3. Development
 
 If you wish to develop this module, you can clone your own fork then execute the following commands to get setup:
 
@@ -283,7 +311,7 @@ If you want to build TypeScript, run `yarn build`.
 
 You can additionally run `yarn clean` to clean the build output for both languages.
 
-### Testing
+### 3.1. Testing
 
 Once you have the development environment setup, you can run `yarn test` to run the test suite.
 
@@ -293,7 +321,7 @@ If you want to watch the test files and re-run them on code changes, you can run
 
 If writing tests, please replicate the tests in the [ConfusableMatcher source code](https://github.com/TETYYS/ConfusableMatcher).
 
-### Benchmarks
+### 3.2. Benchmarks
 
 You can run a benchmark by following the development steps, then running `yarn benchmark`.
 
