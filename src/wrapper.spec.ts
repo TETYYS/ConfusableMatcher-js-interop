@@ -827,8 +827,8 @@ describe('Unit Tests', () => {
         m = new ConfusableMatcher([], ['Ž']);
         r = m.indexOfSync('ŽSŽIŽMŽPŽ', 'SIMP', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(9);
+        expect(r.start).toEqual(1);
+        expect(r.size).toEqual(8);
     });
 
     test('Test43', () => {
@@ -884,28 +884,28 @@ describe('Unit Tests', () => {
 
         let r = m.indexOfSync('XXABC', 'ABC', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(0);
-        expect(r.size).toEqual(5);
+        expect(r.start).toEqual(2);
+        expect(r.size).toEqual(3);
 
         r = m.indexOfSync('X XABC', 'ABC', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(4);
+        expect(r.start).toEqual(3);
+        expect(r.size).toEqual(3);
 
         r = m.indexOfSync('X૰XABC', 'ABC', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(2);
-        expect(r.size).toEqual(4);
+        expect(r.start).toEqual(3);
+        expect(r.size).toEqual(3);
 
         r = m.indexOfSync(' X XABC', 'ABC', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(3);
-        expect(r.size).toEqual(4);
+        expect(r.start).toEqual(4);
+        expect(r.size).toEqual(3);
 
         r = m.indexOfSync(' XXABC', 'ABC', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(1);
-        expect(r.size).toEqual(5);
+        expect(r.start).toEqual(3);
+        expect(r.size).toEqual(3);
 
         r = m.indexOfSync(' XX ABC', 'ABC', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
@@ -914,8 +914,8 @@ describe('Unit Tests', () => {
 
         r = m.indexOfSync('XXXX XXABC', 'ABC', opts);
         expect(r.status).toEqual(EReturnStatus.MATCH);
-        expect(r.start).toEqual(5);
-        expect(r.size).toEqual(5);
+        expect(r.start).toEqual(7);
+        expect(r.size).toEqual(3);
     });
 });
 
