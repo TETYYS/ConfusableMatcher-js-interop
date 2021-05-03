@@ -2,10 +2,10 @@
 
 This library exports a wrapper class bundled with TypeScript declarations that allows you to use the C++ ConfusableMatcher inside your JavaScript (NodeJS/CommonJS) applications.
 
--   [Installing](#installing)
+-   [Installation](#installation)
 -   [Usage](#usage)
     -   [new ConfusableMatcher()](#new-confusablematcher)
-        -   [addMapping(key: string, value: string): void](#addmappingkey-string-value-string-void)
+        -   [addMapping(key, value): void](#addmappingkey-value-void)
         -   [addMappings(mappings): void](#addmappingsmappings-void)
         -   [removeMapping(key, value): void](#removemappingkey-value-void)
         -   [removeMappings(mappings): void](#removemappingsmappings-void)
@@ -26,7 +26,7 @@ This library exports a wrapper class bundled with TypeScript declarations that a
     -   [Testing](#testing)
     -   [Benchmarks](#benchmarks)
 
-## Installing
+## Installation
 
 **To install this module, CMake v3.0 or higher must be present on the system.**
 
