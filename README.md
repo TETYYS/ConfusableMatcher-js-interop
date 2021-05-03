@@ -16,12 +16,12 @@ This library exports a wrapper class bundled with TypeScript declarations that a
         -   [removeSkip(skip): void](#removeskipskip-void)
         -   [removeSkips(skips): void](#removeskipsskips-void)
         -   [getSkips(): string[]](#getskips-string)
-        -   [indexOf(input, needle, options): IResult](#indexofinput-needle-options-iresult)
-        -   [indexOfAsync(input, needle, options): Promise\<IResult\>](#indexofasyncinput-needle-options-promiseiresult)
-        -   [lastIndexOf(input, needle, options): IResult](#lastindexofinput-needle-options-iresult)
-        -   [lastIndexOfAsync(input, needle, options): Promise\<IResult\>](#lastindexofasyncinput-needle-options-promiseiresult)
-        -   [contains(input, needle, options): boolean](#containsinput-needle-options-boolean)
-        -   [containsAsync(input, needle, options?): Promise\<boolean\>](#containsasyncinput-needle-options-promiseboolean)
+        -   [indexOfSync(input, needle, options): IResult](#indexofinput-needle-options-iresult)
+        -   [indexOf(input, needle, options): Promise\<IResult\>](#indexofasyncinput-needle-options-promiseiresult)
+        -   [lastIndexOfSync(input, needle, options): IResult](#lastindexofinput-needle-options-iresult)
+        -   [lastIndexOf(input, needle, options): Promise\<IResult\>](#lastindexofasyncinput-needle-options-promiseiresult)
+        -   [containsSync(input, needle, options): boolean](#containsinput-needle-options-boolean)
+        -   [contains(input, needle, options?): Promise\<boolean\>](#containsasyncinput-needle-options-promiseboolean)
 -   [Development](#development)
     -   [Testing](#testing)
     -   [Benchmarks](#benchmarks)
@@ -54,9 +54,17 @@ const options: Partial<IIndexOfOptions> = {
 const input: string =
     'Žebras are a short, stocky animal that is generally about 8 feet long and stands between 4 and 5 feet at the shoulder.';
 const needle: string = 'Zebras';
-const result: IResult = cm.indexOf(input, needle, options);
+const result: IResult = cm.indexOfSync(input, needle, options);
 const status: EReturnStatus = result.status;
 ```
+
+**It is important to realise the distinction between the synchronous and asynchronous methods.**
+
+**Async methods are considerably slower than the sync versions, however they are [non-blocking](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#don-t-block-the-event-loop) by utilizing the [NodeJS thread pool](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).**
+
+**[The thread pool size can be changed by setting the `UV_THREADPOOL_SIZE` environment variable](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size). One thread per physical CPU core is recommended, and the default is four.**
+
+**Keep in mind more threads is more context switches, setting a higher thread count that core count will not give you insane performance - you will have to tune your application for it's runtime environment.**
 
 ### new ConfusableMatcher()
 
@@ -181,7 +189,7 @@ removeSkips(skips: string[]): void
 getSkips(): string[]
 ```
 
-#### indexOf(input, needle, options): IResult
+#### indexOfSync(input, needle, options): IResult
 
 ```ts
 /**
@@ -191,10 +199,10 @@ getSkips(): string[]
  * @param options An optional object containing options in the search.
  * @returns An object containing match information.
  */
-indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): IResult
+indexOfSync(input: string, needle: string, options?: Partial<IIndexOfOptions>): IResult
 ```
 
-#### indexOfAsync(input, needle, options): Promise<IResult>
+#### indexOf(input, needle, options): Promise<IResult>
 
 ```ts
 /**
@@ -204,10 +212,10 @@ indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): IRes
  * @param options An optional object containing options in the search.
  * @returns A Promise that resolves to an object containing match information.
  */
-indexOfAsync(input: string, needle: string, options?: Partial<IIndexOfOptions>): Promise<IResult>
+indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): Promise<IResult>
 ```
 
-#### lastIndexOf(input, needle, options): IResult
+#### lastIndexOfSync(input, needle, options): IResult
 
 ```ts
 /**
@@ -217,10 +225,10 @@ indexOfAsync(input: string, needle: string, options?: Partial<IIndexOfOptions>):
  * @param options An optional object containing options in the search.
  * @returns An object containing match information.
  */
-lastIndexOf(input: string, needle: string, options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>): IResult
+lastIndexOfSync(input: string, needle: string, options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>): IResult
 ```
 
-#### lastIndexOfAsync(input, needle, options): Promise<IResult>
+#### lastIndexOf(input, needle, options): Promise<IResult>
 
 ```ts
 /**
@@ -230,10 +238,10 @@ lastIndexOf(input: string, needle: string, options?: Omit<Partial<IIndexOfOption
  * @param options An optional object containing options in the search.
  * @returns A Promise that resolves to an object containing match information.
  */
-lastIndexOfAsync(input: string, needle: string, options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>): Promise<IResult>
+lastIndexOf(input: string, needle: string, options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>): Promise<IResult>
 ```
 
-#### contains(input, needle, options): boolean
+#### containsSync(input, needle, options): boolean
 
 ```ts
 /**
@@ -242,10 +250,10 @@ lastIndexOfAsync(input: string, needle: string, options?: Omit<Partial<IIndexOfO
  * @param options An optional object containing options in the search.
  * @returns True if the `needle` is found inside `input`.
  */
-contains(input: string, needle: string, options?: IIndexOfOptions): boolean
+containsSync(input: string, needle: string, options?: IIndexOfOptions): boolean
 ```
 
-#### containsAsync(input, needle, options?): Promise<boolean>
+#### contains(input, needle, options?): Promise<boolean>
 
 ```ts
 /**
@@ -254,7 +262,7 @@ contains(input: string, needle: string, options?: IIndexOfOptions): boolean
  * @param options An optional object containing options in the search.
  * @returns A Promise that resolves to true if the `needle` is found inside `input`.
  */
-containsAsync(input: string, needle: string, options?: IIndexOfOptions): Promise<boolean>
+contains(input: string, needle: string, options?: IIndexOfOptions): Promise<boolean>
 ```
 
 ## Development
@@ -300,7 +308,7 @@ The command `yarn benchmark:debug` will run the benchmark with all flags enabled
 
 Please PR your reported time and hardware.
 
-| Processor                 | Memory                                         | Version | #indexOf() Performance                   | #indexOfAsync() Performance             |
+| Processor                 | Memory                                         | Version | #indexOfSync() Performance               | #indexOf() Performance                  |
 | ------------------------- | ---------------------------------------------- | ------- | ---------------------------------------- | --------------------------------------- |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 2.3.0   | 264,466 ops/sec ±0.32% (95 runs sampled) | 16,133 ops/sec ±0.90% (81 runs sampled) |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 2.2.0   | 265,129 ops/sec ±1.02% (95 runs sampled) |                                         |

@@ -177,7 +177,7 @@ export class ConfusableMatcher {
      * @param options An optional object containing options in the search.
      * @returns An object containing match information.
      */
-    public indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): IResult {
+    public indexOfSync(input: string, needle: string, options?: Partial<IIndexOfOptions>): IResult {
         let utf8: Buffer | undefined;
 
         if (typeof options?.startIndex === 'number' && options.startIndex !== 0) {
@@ -211,7 +211,7 @@ export class ConfusableMatcher {
      * @param options An optional object containing options in the search.
      * @returns A Promise that resolves to an object containing match information.
      */
-    public indexOfAsync(input: string, needle: string, options?: Partial<IIndexOfOptions>): Promise<IResult> {
+    public indexOf(input: string, needle: string, options?: Partial<IIndexOfOptions>): Promise<IResult> {
         let utf8: Buffer | undefined;
 
         if (typeof options?.startIndex === 'number' && options.startIndex !== 0) {
@@ -250,12 +250,12 @@ export class ConfusableMatcher {
      * @param options An optional object containing options in the search.
      * @returns An object containing match information.
      */
-    public lastIndexOf(
+    public lastIndexOfSync(
         input: string,
         needle: string,
         options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>
     ): IResult {
-        return this.indexOf(input, needle, { ...options, startFromEnd: true, startIndex: input.length - 1 });
+        return this.indexOfSync(input, needle, { ...options, startFromEnd: true, startIndex: input.length - 1 });
     }
 
     /**
@@ -265,12 +265,12 @@ export class ConfusableMatcher {
      * @param options An optional object containing options in the search.
      * @returns A Promise that resolves to an object containing match information.
      */
-    public lastIndexOfAsync(
+    public lastIndexOf(
         input: string,
         needle: string,
         options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>
     ): Promise<IResult> {
-        return this.indexOfAsync(input, needle, { ...options, startFromEnd: true, startIndex: input.length - 1 });
+        return this.indexOf(input, needle, { ...options, startFromEnd: true, startIndex: input.length - 1 });
     }
 
     /**
@@ -279,7 +279,7 @@ export class ConfusableMatcher {
      * @param options An optional object containing options in the search.
      * @returns True if the `needle` is found inside `input`.
      */
-    public contains(input: string, needle: string, options?: IIndexOfOptions): boolean {
+    public containsSync(input: string, needle: string, options?: IIndexOfOptions): boolean {
         const { status } = this._instance.indexOf(input, needle, this._fillDefaultOptions(options));
         return status === EReturnStatus.MATCH;
     }
@@ -290,7 +290,7 @@ export class ConfusableMatcher {
      * @param options An optional object containing options in the search.
      * @returns A Promise that resolves to true if the `needle` is found inside `input`.
      */
-    public async containsAsync(input: string, needle: string, options?: IIndexOfOptions): Promise<boolean> {
+    public async contains(input: string, needle: string, options?: IIndexOfOptions): Promise<boolean> {
         return new Promise((resolve) => {
             this._instance.indexOfAsync(
                 ({ status }) => resolve(status === EReturnStatus.MATCH),
