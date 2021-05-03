@@ -20,10 +20,13 @@ export interface IIndexOfOptions {
     startFromEnd: boolean;
     statePushLimit: number;
     matchOnWordBoundary: boolean;
+    needlePosPointers: number | null;
 }
 
 export declare class ConfusableMatcherInstance {
     getKeyMappings(value: string): string[];
+    computeStringPosPointers(needle: string): number;
+    freeStringPosPointers(pointer: number): void;
     indexOf(input: string, needle: string, options?: IIndexOfOptions): IResult;
     indexOfAsync(callback: (result: IResult) => void, input: string, needle: string, options?: IIndexOfOptions): void;
 }
