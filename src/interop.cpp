@@ -83,11 +83,27 @@ Napi::Value ConfusableMatcherNapiInterop::getKeyMappings(const Napi::CallbackInf
     Napi::Array result = Napi::Array::New(env, size);
     for (size_t x = 0; x < size; x++)
     {
-        auto item = mappings.IsStack ? mappings.Stack[x] : mappings.Heap[x];
-        result[x] = Napi::String::New(env, item.Str);
+        result[x] = Napi::String::New(env, mappings.GetElement(x).Str);
     }
 
     return result;
+}
+
+Napi::Value ConfusableMatcherNapiInterop::computeStringPosPointers(const Napi::CallbackInfo &info)
+{
+    Napi::Env env = info.Env();
+    std::string needle = info[0].As<Napi::String>().Utf8Value();
+    CMStringPosPointers *stringPosPointer = this->_instance->ComputeStringPosPointers(needle);
+    return Napi::External<CMStringPosPointers>::New(info.Env(), stringPosPointer);
+}
+
+Napi::Value ConfusableMatcherNapiInterop::freeStringPosPointers(const Napi::CallbackInfo &info)
+{
+    Napi::Env env = info.Env();
+    Napi::External<CMStringPosPointers> external = info[0].As<Napi::External<CMStringPosPointers>>();
+    CMStringPosPointers *stringPosPointer = external.Data();
+    delete stringPosPointer;
+    return env.Undefined();
 }
 
 Napi::Value ConfusableMatcherNapiInterop::indexOf(const Napi::CallbackInfo &info)
@@ -104,6 +120,14 @@ Napi::Value ConfusableMatcherNapiInterop::indexOf(const Napi::CallbackInfo &info
     cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").As<Napi::Boolean>().ToBoolean();
     cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").As<Napi::Number>().ToNumber().Uint32Value();
     cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").As<Napi::Boolean>().ToBoolean();
+
+    auto posPointer = optionsObject.Get("needlePosPointers");
+    if (!posPointer.IsNull())
+    {
+        Napi::External<CMStringPosPointers> external = posPointer.As<Napi::External<CMStringPosPointers>>();
+        CMStringPosPointers *stringPosPointer = external.Data();
+        cmOpts.ContainsPosPointers = stringPosPointer;
+    }
 
     CMReturn result = this->_instance->IndexOf(in, needle, cmOpts);
 
@@ -131,6 +155,14 @@ Napi::Value ConfusableMatcherNapiInterop::indexOfAsync(const Napi::CallbackInfo 
     cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").As<Napi::Number>().ToNumber().Uint32Value();
     cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").As<Napi::Boolean>().ToBoolean();
 
+    auto posPointer = optionsObject.Get("needlePosPointers");
+    if (!posPointer.IsNull())
+    {
+        Napi::External<CMStringPosPointers> external = posPointer.As<Napi::External<CMStringPosPointers>>();
+        CMStringPosPointers *stringPosPointer = external.Data();
+        cmOpts.ContainsPosPointers = stringPosPointer;
+    }
+
     ConfusableMatcherIndexOfAsyncWorker *worker = new ConfusableMatcherIndexOfAsyncWorker(callback, this->_instance, in, needle, cmOpts);
     worker->Queue();
     return env.Undefined();
@@ -143,6 +175,8 @@ Napi::Function ConfusableMatcherNapiInterop::GetClass(Napi::Env env)
         "ConfusableMatcher",
         {
             ConfusableMatcherNapiInterop::InstanceMethod("getKeyMappings", &ConfusableMatcherNapiInterop::getKeyMappings),
+            ConfusableMatcherNapiInterop::InstanceMethod("computeStringPosPointers", &ConfusableMatcherNapiInterop::computeStringPosPointers),
+            ConfusableMatcherNapiInterop::InstanceMethod("freeStringPosPointers", &ConfusableMatcherNapiInterop::freeStringPosPointers),
             ConfusableMatcherNapiInterop::InstanceMethod("indexOf", &ConfusableMatcherNapiInterop::indexOf),
             ConfusableMatcherNapiInterop::InstanceMethod("indexOfAsync", &ConfusableMatcherNapiInterop::indexOfAsync),
         });
