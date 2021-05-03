@@ -25,6 +25,7 @@ export interface IIndexOfOptions {
 export declare class ConfusableMatcherInstance {
     getKeyMappings(value: string): string[];
     indexOf(input: string, needle: string, options?: IIndexOfOptions): IResult;
+    indexOfAsync(callback: (result: IResult) => void, input: string, needle: string, options?: IIndexOfOptions): void;
 }
 
 interface IConfusableMatcherProptotype {
