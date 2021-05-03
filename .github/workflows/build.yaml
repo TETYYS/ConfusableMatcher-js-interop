@@ -11,18 +11,6 @@ on:
             # Depdendencies
             - package.json
             - yarn.lock
-    pull_request:
-        paths:
-            # Source
-            - src/**
-            # Workflow
-            - .github/workflows/build.yaml
-            # TypeScript
-            - tsconfig*
-            # Depdendencies
-            - package.json
-            - yarn.lock
-
 jobs:
     build:
         runs-on: ubuntu-20.04
