@@ -49,6 +49,8 @@ You can enable performance debugging with benchmark flags the following benchmar
 | -l --loop       | Prints the time elapsed in milliseconds between event loop ticks. |
 | -m --microtasks | Prints the duration it took for a promise to resolve.             |
 
+The command `yarn benchmark:debug` will run the benchmark with all flags enabled.
+
 Please PR your reported time and hardware.
 
 | Processor                 | Memory                                         | Version | #indexOf() Performance                   | #indexOfAsync() Performance             |
