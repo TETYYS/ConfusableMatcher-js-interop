@@ -205,6 +205,45 @@ export class ConfusableMatcher {
     }
 
     /**
+     * @description Searches for the first occurrence of `needle` in `input`.
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns A Promise that resolves to an object containing match information.
+     */
+    public indexOfAsync(input: string, needle: string, options?: Partial<IIndexOfOptions>): Promise<IResult> {
+        let utf8: Buffer | undefined;
+
+        if (typeof options?.startIndex === 'number' && options.startIndex !== 0) {
+            utf8 = Buffer.from(input);
+            options.startIndex = utf8.toString('utf-8', 0, options.startIndex).length;
+        }
+
+        return new Promise<IResult>((resolve) => {
+            this._instance.indexOfAsync(
+                (result) => {
+                    if (result.start >= 0) {
+                        if (!utf8) {
+                            utf8 = Buffer.from(input);
+                        }
+                        const start = utf8.toString('utf-8', 0, result.start);
+                        const size = utf8.toString('utf-8', result.start, result.start + result.size);
+
+                        resolve({
+                            size: size.length,
+                            start: start.length,
+                            status: result.status,
+                        });
+                    }
+                },
+                input,
+                needle,
+                this._fillDefaultOptions(options)
+            );
+        });
+    }
+
+    /**
      * @description Searches for the last occurrence of `needle` in `input`.
      * @param input The string to search.
      * @param needle The string to look for in `input`.
@@ -220,14 +259,46 @@ export class ConfusableMatcher {
     }
 
     /**
+     * @description Searches for the last occurrence of `needle` in `input`.
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns A Promise that resolves to an object containing match information.
+     */
+    public lastIndexOfAsync(
+        input: string,
+        needle: string,
+        options?: Omit<Partial<IIndexOfOptions>, 'startFromEnd'>
+    ): Promise<IResult> {
+        return this.indexOfAsync(input, needle, { ...options, startFromEnd: true, startIndex: input.length - 1 });
+    }
+
+    /**
      * @param input The string to search.
      * @param needle The string to look for in `input`.
      * @param options An optional object containing options in the search.
      * @returns True if the `needle` is found inside `input`.
      */
     public contains(input: string, needle: string, options?: IIndexOfOptions): boolean {
-        const result = this._instance.indexOf(input, needle, this._fillDefaultOptions(options));
-        return result.status === EReturnStatus.MATCH;
+        const { status } = this._instance.indexOf(input, needle, this._fillDefaultOptions(options));
+        return status === EReturnStatus.MATCH;
+    }
+
+    /**
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns A Promise that resolves to true if the `needle` is found inside `input`.
+     */
+    public async containsAsync(input: string, needle: string, options?: IIndexOfOptions): Promise<boolean> {
+        return new Promise((resolve) => {
+            this._instance.indexOfAsync(
+                ({ status }) => resolve(status === EReturnStatus.MATCH),
+                input,
+                needle,
+                this._fillDefaultOptions(options)
+            );
+        });
     }
     //#endregion Comparators
 
