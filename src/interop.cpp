@@ -1,5 +1,27 @@
 #include "interop.h"
-#include "ConfusableMatcher/ConfusableMatcher.h"
+
+ConfusableMatcherIndexOfAsyncWorker::ConfusableMatcherIndexOfAsyncWorker(Napi::Function &callback, ConfusableMatcher *cm, std::string in, std::string needle, CMOptions opts)
+    : Napi::AsyncWorker(callback)
+{
+    this->_cm = cm;
+    this->_in = in;
+    this->_needle = needle;
+    this->_opts = opts;
+};
+
+void ConfusableMatcherIndexOfAsyncWorker::Execute()
+{
+    this->result = this->_cm->IndexOf(this->_in, this->_needle, this->_opts);
+};
+
+void ConfusableMatcherIndexOfAsyncWorker::OnOK()
+{
+    Napi::Object obj = Napi::Object::New(Env());
+    obj.Set(Napi::String::New(this->Env(), "size"), Napi::Number::New(this->Env(), this->result.Size));
+    obj.Set(Napi::String::New(this->Env(), "start"), Napi::Number::New(this->Env(), this->result.Start));
+    obj.Set(Napi::String::New(this->Env(), "status"), Napi::Number::New(this->Env(), this->result.Status));
+    this->Callback().Call({obj});
+};
 
 ConfusableMatcherNapiInterop::ConfusableMatcherNapiInterop(const Napi::CallbackInfo &info) : ObjectWrap(info)
 {
@@ -93,6 +115,27 @@ Napi::Value ConfusableMatcherNapiInterop::indexOf(const Napi::CallbackInfo &info
     return obj;
 }
 
+Napi::Value ConfusableMatcherNapiInterop::indexOfAsync(const Napi::CallbackInfo &info)
+{
+    Napi::Env env = info.Env();
+
+    Napi::Function callback = info[0].As<Napi::Function>();
+    std::string in = info[1].As<Napi::String>().Utf8Value();
+    std::string needle = info[2].As<Napi::String>().Utf8Value();
+    Napi::Object optionsObject = info[3].As<Napi::Object>();
+
+    CMOptions cmOpts = {};
+    cmOpts.MatchRepeating = optionsObject.Get("matchRepeating").As<Napi::Boolean>().ToBoolean();
+    cmOpts.StartIndex = optionsObject.Get("startIndex").As<Napi::Number>().ToNumber().Uint32Value();
+    cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").As<Napi::Boolean>().ToBoolean();
+    cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").As<Napi::Number>().ToNumber().Uint32Value();
+    cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").As<Napi::Boolean>().ToBoolean();
+
+    ConfusableMatcherIndexOfAsyncWorker *worker = new ConfusableMatcherIndexOfAsyncWorker(callback, this->_instance, in, needle, cmOpts);
+    worker->Queue();
+    return env.Undefined();
+};
+
 Napi::Function ConfusableMatcherNapiInterop::GetClass(Napi::Env env)
 {
     return DefineClass(
@@ -101,6 +144,7 @@ Napi::Function ConfusableMatcherNapiInterop::GetClass(Napi::Env env)
         {
             ConfusableMatcherNapiInterop::InstanceMethod("getKeyMappings", &ConfusableMatcherNapiInterop::getKeyMappings),
             ConfusableMatcherNapiInterop::InstanceMethod("indexOf", &ConfusableMatcherNapiInterop::indexOf),
+            ConfusableMatcherNapiInterop::InstanceMethod("indexOfAsync", &ConfusableMatcherNapiInterop::indexOfAsync),
         });
 }
 
