@@ -4,6 +4,7 @@ import { ConfusableMatcherInterop, EReturnStatus } from './binding';
 const DEFAULT_OPTIONS: IIndexOfOptions = {
     matchOnWordBoundary: false,
     matchRepeating: true,
+    needlePosPointers: null,
     startFromEnd: false,
     startIndex: 0,
     statePushLimit: 1000,
@@ -168,6 +169,26 @@ export class ConfusableMatcher {
         return [...this._skips];
     }
     //#endregion Skips
+
+    //#region Pre-compute
+    /**
+     * @description Pre-computes a needle as a tree structure internally for faster matching.
+     * If this is used, manual memory cleanup through `freeStringPosPointers` is required.
+     * @param needle The needle to build a tree for.
+     * @returns A pointer value as int64 (number).
+     */
+    public computeStringPosPointers(needle: string): number {
+        return this._instance.computeStringPosPointers(needle);
+    }
+
+    /**
+     * @description Frees the memory used by a precomputed needle.
+     * @param pointer An int64 pointer value returned from `computeStringPosPointers`.
+     */
+    public freeStringPosPointers(pointer: number): void {
+        this._instance.freeStringPosPointers(pointer);
+    }
+    //#endregion Pre-compute
 
     //#region Comparators
     /**
