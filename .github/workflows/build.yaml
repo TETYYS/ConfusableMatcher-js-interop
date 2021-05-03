@@ -1,8 +1,6 @@
 name: build
 on:
     push:
-        branches:
-            - master
         paths:
             # Source
             - src/**
@@ -67,7 +65,7 @@ jobs:
               run: yarn test
 
             - name: Publish
-              if: github.ref == 'refs/heads/master'
+              if: startsWith(github.ref, 'refs/tags/')
               run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
