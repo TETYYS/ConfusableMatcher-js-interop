@@ -10,6 +10,8 @@ public:
     ~ConfusableMatcherNapiInterop();
 
     Napi::Value getKeyMappings(const Napi::CallbackInfo &);
+    Napi::Value computeStringPosPointers(const Napi::CallbackInfo &);
+    Napi::Value freeStringPosPointers(const Napi::CallbackInfo &);
     Napi::Value indexOf(const Napi::CallbackInfo &);
     Napi::Value indexOfAsync(const Napi::CallbackInfo &);
 
