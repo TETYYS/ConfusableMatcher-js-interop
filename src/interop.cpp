@@ -36,8 +36,8 @@ ConfusableMatcherNapiInterop::ConfusableMatcherNapiInterop(const Napi::CallbackI
     {
         Napi::Array result = mapArray.Get(x).As<Napi::Array>();
         std::pair<std::string, std::string> kvPair = {
-            result.Get((uint32_t)0).As<Napi::String>().Utf8Value(),
-            result.Get((uint32_t)1).As<Napi::String>().Utf8Value()};
+            result.Get((uint32_t)0).ToString().Utf8Value(),
+            result.Get((uint32_t)1).ToString().Utf8Value()};
         mapVector.push_back(kvPair);
     }
 
@@ -48,13 +48,13 @@ ConfusableMatcherNapiInterop::ConfusableMatcherNapiInterop(const Napi::CallbackI
     Napi::Array skipsArray = info[1].As<Napi::Array>();
     for (uint32_t x = 0; x < skipsArray.Length(); x++)
     {
-        skipsSet.insert(skipsArray.Get(x).As<Napi::String>().Utf8Value());
+        skipsSet.insert(skipsArray.Get(x).ToString().Utf8Value());
     }
 
     /**
      * Default Values
      */
-    bool addDefaults = info[2].As<Napi::Boolean>().ToBoolean();
+    bool addDefaults = info[2].ToBoolean();
 
     try
     {
@@ -74,10 +74,10 @@ ConfusableMatcherNapiInterop::~ConfusableMatcherNapiInterop()
 Napi::Value ConfusableMatcherNapiInterop::getKeyMappings(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
-    Napi::String Key = info[0].As<Napi::String>();
+    std::string key = info[0].ToString().Utf8Value();
 
     StackVector<CMString> mappings;
-    this->_instance->GetKeyMappings(Key.Utf8Value(), mappings);
+    this->_instance->GetKeyMappings(key, mappings);
 
     size_t size = mappings.Size();
     Napi::Array result = Napi::Array::New(env, size);
@@ -92,7 +92,7 @@ Napi::Value ConfusableMatcherNapiInterop::getKeyMappings(const Napi::CallbackInf
 Napi::Value ConfusableMatcherNapiInterop::computeStringPosPointers(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
-    std::string needle = info[0].As<Napi::String>().Utf8Value();
+    std::string needle = info[0].ToString().Utf8Value();
     CMStringPosPointers *stringPosPointer = this->_instance->ComputeStringPosPointers(needle);
     return Napi::External<CMStringPosPointers>::New(info.Env(), stringPosPointer);
 }
@@ -110,16 +110,16 @@ Napi::Value ConfusableMatcherNapiInterop::indexOf(const Napi::CallbackInfo &info
 {
     Napi::Env env = info.Env();
 
-    std::string in = info[0].As<Napi::String>().Utf8Value();
-    std::string needle = info[1].As<Napi::String>().Utf8Value();
+    std::string in = info[0].ToString().Utf8Value();
+    std::string needle = info[1].ToString().Utf8Value();
     Napi::Object optionsObject = info[2].As<Napi::Object>();
 
     CMOptions cmOpts = {};
-    cmOpts.MatchRepeating = optionsObject.Get("matchRepeating").As<Napi::Boolean>().ToBoolean();
-    cmOpts.StartIndex = optionsObject.Get("startIndex").As<Napi::Number>().ToNumber().Uint32Value();
-    cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").As<Napi::Boolean>().ToBoolean();
-    cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").As<Napi::Number>().ToNumber().Uint32Value();
-    cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").As<Napi::Boolean>().ToBoolean();
+    cmOpts.MatchRepeating = optionsObject.Get("matchRepeating").ToBoolean();
+    cmOpts.StartIndex = optionsObject.Get("startIndex").ToNumber().Uint32Value();
+    cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").ToBoolean();
+    cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").ToNumber().Uint32Value();
+    cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").ToBoolean();
 
     auto posPointer = optionsObject.Get("needlePosPointers");
     if (!posPointer.IsNull())
@@ -144,16 +144,16 @@ Napi::Value ConfusableMatcherNapiInterop::indexOfAsync(const Napi::CallbackInfo 
     Napi::Env env = info.Env();
 
     Napi::Function callback = info[0].As<Napi::Function>();
-    std::string in = info[1].As<Napi::String>().Utf8Value();
-    std::string needle = info[2].As<Napi::String>().Utf8Value();
+    std::string in = info[1].ToString().Utf8Value();
+    std::string needle = info[2].ToString().Utf8Value();
     Napi::Object optionsObject = info[3].As<Napi::Object>();
 
     CMOptions cmOpts = {};
-    cmOpts.MatchRepeating = optionsObject.Get("matchRepeating").As<Napi::Boolean>().ToBoolean();
-    cmOpts.StartIndex = optionsObject.Get("startIndex").As<Napi::Number>().ToNumber().Uint32Value();
-    cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").As<Napi::Boolean>().ToBoolean();
-    cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").As<Napi::Number>().ToNumber().Uint32Value();
-    cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").As<Napi::Boolean>().ToBoolean();
+    cmOpts.MatchRepeating = optionsObject.Get("matchRepeating").ToBoolean();
+    cmOpts.StartIndex = optionsObject.Get("startIndex").ToNumber().Uint32Value();
+    cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").ToBoolean();
+    cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").ToNumber().Uint32Value();
+    cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").ToBoolean();
 
     auto posPointer = optionsObject.Get("needlePosPointers");
     if (!posPointer.IsNull())
