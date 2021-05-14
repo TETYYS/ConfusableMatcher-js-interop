@@ -47,7 +47,7 @@ The example below shows explicit typings which are not necessary, and can be inf
 ```ts
 import { ConfusableMatcher, EReturnStatus, IIndexOfOptions, IResult, Mapping } from 'confusablematcher-js-interop';
 
-const map: Mapping[] = ['Z', 'Ž'];
+const map: Mapping[] = [['Z', 'Ž']];
 const skips: string[] = [' ', '_', '-'];
 const cm = new ConfusableMatcher(map, skips, true);
 const options: Partial<IIndexOfOptions> = {
