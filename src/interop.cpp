@@ -102,7 +102,7 @@ Napi::Value ConfusableMatcherNapiInterop::freeStringPosPointers(const Napi::Call
     Napi::Env env = info.Env();
     Napi::External<CMStringPosPointers> external = info[0].As<Napi::External<CMStringPosPointers>>();
     CMStringPosPointers *stringPosPointer = external.Data();
-    delete stringPosPointer;
+    this->_instance->FreeStringPosPointers(stringPosPointer);
     return env.Undefined();
 }
 
