@@ -47,6 +47,7 @@
         "test": "jest --verbose --passWithNoTests",
         "test:watch": "yarn test --watchAll",
         "test:coverage": "yarn test --coverage",
+        "example:zebra": "ts-node ./src/examples/zebra.ts",
         "benchmark": "ts-node ./src/benchmark",
         "benchmark:debug": "yarn benchmark --loop --microtasks",
         "benchmark:watch": "ts-node-dev --cls --rs --inspect --project tsconfig.build.json --respawn ./src/benchmark",
