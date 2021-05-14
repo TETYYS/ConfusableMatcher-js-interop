@@ -1,4 +1,4 @@
-import type { IIndexOfOptions, IResult, Mapping } from '..';
+import type { IIndexOfOptions, IResult, Mapping, StrPosPointer } from '..';
 import { ConfusableMatcher, EReturnStatus } from '..';
 
 const map: Mapping[] = [['Z', 'Ž']];
@@ -9,7 +9,7 @@ const input =
     'Žebras are a short, stocky animal that is generally about 8 feet long and stands between 4 and 5 feet at the shoulder.';
 const needle = 'Zebras';
 
-let strPosPtrs: number | undefined = cm.computeStringPosPointers(needle);
+let strPosPtrs: StrPosPointer | undefined = cm.computeStringPosPointers(needle);
 
 const options: Partial<IIndexOfOptions> = {
     matchOnWordBoundary: true,

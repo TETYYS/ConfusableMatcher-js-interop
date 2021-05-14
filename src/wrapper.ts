@@ -1,4 +1,4 @@
-import type { ConfusableMatcherInstance, IIndexOfOptions, IResult, Mapping } from './binding';
+import type { ConfusableMatcherInstance, IIndexOfOptions, IResult, Mapping, StrPosPointer } from './binding';
 import { ConfusableMatcherInterop, EReturnStatus } from './binding';
 
 const DEFAULT_OPTIONS: IIndexOfOptions = {
@@ -175,17 +175,17 @@ export class ConfusableMatcher {
      * @description Pre-computes a needle as a tree structure internally for faster matching.
      * If this is used, manual memory cleanup through `freeStringPosPointers` is required.
      * @param needle The needle to build a tree for.
-     * @returns A pointer value as int64 (number).
+     * @returns An external reference pointer value.
      */
-    public computeStringPosPointers(needle: string): number {
+    public computeStringPosPointers(needle: string): StrPosPointer {
         return this._instance.computeStringPosPointers(needle);
     }
 
     /**
      * @description Frees the memory used by a precomputed needle.
-     * @param pointer An int64 pointer value returned from `computeStringPosPointers`.
+     * @param pointer An external ref pointer value returned from `computeStringPosPointers`.
      */
-    public freeStringPosPointers(pointer: number): void {
+    public freeStringPosPointers(pointer: StrPosPointer): void {
         this._instance.freeStringPosPointers(pointer);
     }
     //#endregion Pre-compute

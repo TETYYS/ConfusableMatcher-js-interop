@@ -47,21 +47,35 @@ The example below shows explicit typings which are not necessary, and can be inf
 ```ts
 import { ConfusableMatcher, EReturnStatus, IIndexOfOptions, IResult, Mapping } from 'confusablematcher-js-interop';
 
+import type { IIndexOfOptions, IResult, Mapping, StrPosPointer } from 'confusablematcher-js-interop';
+import { ConfusableMatcher, EReturnStatus } from 'confusablematcher-js-interop';
+
 const map: Mapping[] = [['Z', 'Ž']];
 const skips: string[] = [' ', '_', '-'];
 const cm = new ConfusableMatcher(map, skips, true);
-const options: Partial<IIndexOfOptions> = {
-    matchRepeating: true,
-    startIndex: 0,
-    startFromEnd: false,
-    statePushLimit: 10_000,
-    matchOnWordBoundary: true,
-};
-const input: string =
+
+const input =
     'Žebras are a short, stocky animal that is generally about 8 feet long and stands between 4 and 5 feet at the shoulder.';
-const needle: string = 'Zebras';
+const needle = 'Zebras';
+
+let strPosPtrs: StrPosPointer | undefined = cm.computeStringPosPointers(needle);
+
+const options: Partial<IIndexOfOptions> = {
+    matchOnWordBoundary: true,
+    matchRepeating: true,
+    needlePosPointers: strPosPtrs,
+    startFromEnd: false,
+    startIndex: 0,
+    statePushLimit: 10_000,
+};
 const result: IResult = cm.indexOfSync(input, needle, options);
+
+cm.freeStringPosPointers(strPosPtrs);
+strPosPtrs = undefined;
+delete options.needlePosPointers;
+
 const status: EReturnStatus = result.status;
+console.table({ ...result, status: EReturnStatus[status] });
 ```
 
 **It is important to realise the distinction between the synchronous and asynchronous methods.**

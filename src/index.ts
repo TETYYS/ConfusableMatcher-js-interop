@@ -1,2 +1,2 @@
-export { EReturnStatus, IIndexOfOptions, IResult, Mapping } from './binding';
+export { EReturnStatus, IIndexOfOptions, IResult, Mapping, StrPosPointer } from './binding';
 export * from './wrapper';
