@@ -45,8 +45,6 @@ yarn add confusablematcher-js-interop
 The example below shows explicit typings which are not necessary, and can be inferred, but highlights the types you may wish to use in your application.
 
 ```ts
-import { ConfusableMatcher, EReturnStatus, IIndexOfOptions, IResult, Mapping } from 'confusablematcher-js-interop';
-
 import type { IIndexOfOptions, IResult, Mapping, StrPosPointer } from 'confusablematcher-js-interop';
 import { ConfusableMatcher, EReturnStatus } from 'confusablematcher-js-interop';
 
