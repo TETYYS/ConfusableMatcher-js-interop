@@ -118,7 +118,7 @@ Napi::Value ConfusableMatcherNapiInterop::indexOf(const Napi::CallbackInfo &info
     cmOpts.MatchRepeating = optionsObject.Get("matchRepeating").ToBoolean();
     cmOpts.StartIndex = optionsObject.Get("startIndex").ToNumber().Uint32Value();
     cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").ToBoolean();
-    cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").ToNumber().Uint32Value();
+    cmOpts.TimeoutNs = optionsObject.Get("timeoutNs").ToNumber().Uint32Value();
     cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").ToBoolean();
 
     auto posPointer = optionsObject.Get("needlePosPointers");
@@ -152,7 +152,7 @@ Napi::Value ConfusableMatcherNapiInterop::indexOfAsync(const Napi::CallbackInfo 
     cmOpts.MatchRepeating = optionsObject.Get("matchRepeating").ToBoolean();
     cmOpts.StartIndex = optionsObject.Get("startIndex").ToNumber().Uint32Value();
     cmOpts.StartFromEnd = optionsObject.Get("startFromEnd").ToBoolean();
-    cmOpts.StatePushLimit = optionsObject.Get("statePushLimit").ToNumber().Uint32Value();
+    cmOpts.TimeoutNs = optionsObject.Get("timeoutNs").ToNumber().Uint32Value();
     cmOpts.MatchOnWordBoundary = optionsObject.Get("matchOnWordBoundary").ToBoolean();
 
     auto posPointer = optionsObject.Get("needlePosPointers");

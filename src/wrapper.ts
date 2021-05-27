@@ -7,7 +7,7 @@ const DEFAULT_OPTIONS: IIndexOfOptions = {
     needlePosPointers: null,
     startFromEnd: false,
     startIndex: 0,
-    statePushLimit: 1000,
+    timeoutNs: 5e6, // 5ms
 };
 
 export class ConfusableMatcher {

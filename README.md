@@ -64,7 +64,7 @@ const options: Partial<IIndexOfOptions> = {
     needlePosPointers: strPosPtrs,
     startFromEnd: false,
     startIndex: 0,
-    statePushLimit: 10_000,
+    timeoutNs: 1e6, // 1 ms
 };
 const result: IResult = cm.indexOfSync(input, needle, options);
 

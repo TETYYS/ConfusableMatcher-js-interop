@@ -3,7 +3,7 @@ export type Mapping = [key: string, value: string];
 export enum EReturnStatus {
     MATCH = 0,
     NO_MATCH = 1,
-    STATE_PUSH_LIMIT_EXCEEDED = 2,
+    TIMEOUT = 2,
     WORD_BOUNDARY_FAIL_START = 3,
     WORD_BOUNDARY_FAIL_END = 4,
 }
@@ -18,7 +18,7 @@ export interface IIndexOfOptions {
     matchRepeating: boolean;
     startIndex: number;
     startFromEnd: boolean;
-    statePushLimit: number;
+    timeoutNs: number;
     matchOnWordBoundary: boolean;
     needlePosPointers: StrPosPointer | null;
 }

@@ -157,7 +157,7 @@ describe('Unit Tests', () => {
                 matchRepeating: false,
                 startFromEnd: false,
                 startIndex: 0,
-                statePushLimit: 1000,
+                timeoutNs: 100_000,
             });
             expect(r.status).toEqual(EReturnStatus.MATCH);
             expect(r.start == 0 || r.start == 1).toBeTruthy();
@@ -210,7 +210,7 @@ describe('Unit Tests', () => {
                 matchRepeating: false,
                 startFromEnd: false,
                 startIndex: 0,
-                statePushLimit: 1000,
+                timeoutNs: 100_000,
             });
             expect(r.status).toEqual(EReturnStatus.MATCH);
             expect(r.start).toEqual(0);
@@ -223,7 +223,7 @@ describe('Unit Tests', () => {
                     matchRepeating: true,
                     startFromEnd: false,
                     startIndex: 0,
-                    statePushLimit: 2000,
+                    timeoutNs: 200_000,
                 }
             );
             expect(r.status).toEqual(EReturnStatus.MATCH);
@@ -247,7 +247,7 @@ describe('Unit Tests', () => {
                 matchRepeating: true,
                 startFromEnd: false,
                 startIndex: 0,
-                statePushLimit: 1000,
+                timeoutNs: 100_000,
             });
             expect(r.status).toEqual(EReturnStatus.NO_MATCH);
         });
@@ -315,7 +315,7 @@ describe('Unit Tests', () => {
                 'NNNNNNNNNNNNNNNA',
                 { matchRepeating: true, startIndex: 0 }
             );
-            expect(r.status).toEqual(EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED);
+            expect(r.status).toEqual(EReturnStatus.TIMEOUT);
         });
 
         test('Test17', () => {
@@ -327,7 +327,7 @@ describe('Unit Tests', () => {
                 matchRepeating: true,
                 startFromEnd: false,
                 startIndex: 0,
-                statePushLimit: 100000,
+                timeoutNs: 100_00000,
             });
             expect(r.status).toEqual(EReturnStatus.NO_MATCH);
         });
@@ -431,15 +431,15 @@ describe('Unit Tests', () => {
                 matchRepeating: true,
                 startFromEnd: false,
                 startIndex: 0,
-                statePushLimit: 20,
+                timeoutNs: 20,
             });
-            expect(r.status).toEqual(EReturnStatus.STATE_PUSH_LIMIT_EXCEEDED);
+            expect(r.status).toEqual(EReturnStatus.TIMEOUT);
 
             r = m.indexOfSync(s, 'ASB', {
                 matchRepeating: true,
                 startFromEnd: true,
                 startIndex: s.length - 1,
-                statePushLimit: 20,
+                timeoutNs: 20,
             });
             expect(r.status).toEqual(EReturnStatus.MATCH);
             expect(r.start).toEqual(92);
@@ -488,7 +488,7 @@ describe('Unit Tests', () => {
                 matchRepeating: true,
                 startFromEnd: false,
                 startIndex: 0,
-                statePushLimit: 60,
+                timeoutNs: 60,
             });
             expect(r.status).toEqual(EReturnStatus.MATCH);
             expect(r.start).toEqual(0);
@@ -498,7 +498,7 @@ describe('Unit Tests', () => {
         test('Test31', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher();
 
@@ -542,7 +542,7 @@ describe('Unit Tests', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher();
 
@@ -605,7 +605,7 @@ describe('Unit Tests', () => {
                 matchRepeating: true,
                 startFromEnd: true,
                 startIndex: input.length - 1,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher([], ['B']);
 
@@ -618,7 +618,7 @@ describe('Unit Tests', () => {
         test('Test34', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher();
 
@@ -661,7 +661,7 @@ describe('Unit Tests', () => {
         test('Test35', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher([[' ', ' ']], [' ']);
 
@@ -684,7 +684,7 @@ describe('Unit Tests', () => {
         test('Test36', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher([[' ', ' ']], [' ']);
 
@@ -698,7 +698,7 @@ describe('Unit Tests', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher([
                 ['a', 'a'],
@@ -717,7 +717,7 @@ describe('Unit Tests', () => {
 
         test('Test38', () => {
             const opts: Partial<IIndexOfOptions> = {
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher();
 
@@ -739,7 +739,7 @@ describe('Unit Tests', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher([], ['f']);
 
@@ -768,7 +768,7 @@ describe('Unit Tests', () => {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
                 startFromEnd: true,
-                statePushLimit: 50_000,
+                timeoutNs: 1_000_000,
             };
             const m = new ConfusableMatcher([], ['f']);
 
@@ -806,7 +806,7 @@ describe('Unit Tests', () => {
             const r = m.indexOfSync('agdhsjs s 1 mmm ppps dhsjdhsd', 'simps', {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
-                statePushLimit: 50000,
+                timeoutNs: 1_000_000,
             });
             expect(r.status).toEqual(EReturnStatus.MATCH);
             expect(r.start).toEqual(8);
@@ -817,7 +817,7 @@ describe('Unit Tests', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
-                statePushLimit: 50000,
+                timeoutNs: 1_000_000,
             };
             let m = new ConfusableMatcher([], ['░']);
             let r = m.indexOfSync('░S░I░M░P░', 'SIMP', opts);
@@ -840,7 +840,7 @@ describe('Unit Tests', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
-                statePushLimit: 50000,
+                timeoutNs: 1_000_000,
             };
             let m = new ConfusableMatcher(map, ['░']);
             let r = m.indexOfSync('░S░I░M░P░', 'SIMP', opts);
@@ -860,7 +860,7 @@ describe('Unit Tests', () => {
             const r = m.indexOfSync('A  B', ' B', {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
-                statePushLimit: 50000,
+                timeoutNs: 1_000_000,
             });
             expect(r.status).toEqual(EReturnStatus.MATCH);
             expect(r.start).toEqual(2);
@@ -880,7 +880,7 @@ describe('Unit Tests', () => {
             const opts: Partial<IIndexOfOptions> = {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
-                statePushLimit: 50000,
+                timeoutNs: 1_000_000,
             };
 
             let r = m.indexOfSync('XXABC', 'ABC', opts);
@@ -929,7 +929,7 @@ describe('Unit Tests', () => {
                 matchOnWordBoundary: true,
                 matchRepeating: true,
                 needlePosPointers: needlePtr,
-                statePushLimit: 50000,
+                timeoutNs: 1_000_000,
             };
             let r = m.indexOfSync('░S░I░M░P░', needle, opts);
             expect(r.status).toEqual(EReturnStatus.MATCH);
