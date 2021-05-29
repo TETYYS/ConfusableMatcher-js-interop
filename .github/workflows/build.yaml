@@ -74,6 +74,9 @@ jobs:
             - name: Dependencies (Linux/GLIBC)
               if: contains(matrix.container, 'ubuntu')
               run: |
+                  apt-get update -y
+                  apt-get upgrade -y
+                  apt-get install -y curl
                   curl -sL https://rpm.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
                   apt install -y gcc-c++ cmake make git python3 nodejs
                   npm install --global yarn
