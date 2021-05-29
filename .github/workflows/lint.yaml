@@ -40,7 +40,7 @@ jobs:
 
             - name: Install JQ
               run: |
-                  apt-get install -y jq
+                  sudo apt-get install -y jq
 
             - name: Filter Dependencies
               run: |
