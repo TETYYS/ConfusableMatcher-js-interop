@@ -82,7 +82,7 @@ jobs:
                   apt-get install -y make
                   apt-get install -y git
                   apt-get install -y python3
-                  curl -sL https://rpm.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
+                  curl -fsSL https://deb.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
                   apt-get install -y nodejs
                   npm install --global yarn
               env:
