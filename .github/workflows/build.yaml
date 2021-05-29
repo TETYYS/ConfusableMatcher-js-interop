@@ -70,16 +70,6 @@ jobs:
                       nodejs_version: 16
 
         steps:
-            - name: Checkout Latest Commit
-              uses: actions/checkout@v2
-              with:
-                  submodules: recursive
-                  fetch-depth: 1
-
-            - name: CHOWN Container Volume
-              if: matrix.container
-              run: chown root.root .
-
             # Linux (GLIBC) Dependencies
             - name: Dependencies (Linux/GLIBC)
               if: contains(matrix.container, 'centos')
@@ -97,6 +87,16 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.nodejs_version }}
+
+            - name: Checkout Latest Commit
+              uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+                  fetch-depth: 1
+
+            - name: CHOWN Container Volume
+              if: matrix.container
+              run: chown root.root .
 
             - name: Restore Dependencies
               uses: actions/cache@v2
