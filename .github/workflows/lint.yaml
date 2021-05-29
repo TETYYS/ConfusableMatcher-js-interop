@@ -44,7 +44,7 @@ jobs:
 
             - name: Filter Dependencies
               run: |
-                  jq '{ name: .name, description: .description, license: .license, devDependencies: .devDependencies | with_entries(select(.key | contains("lint") or contains("typescript"))), scripts: .scripts | with_entries(select(.key | contains("lint"))) }' package.json > out.tmp
+                  jq '{ name: .name, description: .description, license: .license, devDependencies: .devDependencies | with_entries(select(.key | contains("lint") or contains("typescript") or contains("prettier"))), scripts: .scripts | with_entries(select(.key | contains("lint"))) }' package.json > out.tmp
                   rm package.json
                   mv out.tmp package.json
 
