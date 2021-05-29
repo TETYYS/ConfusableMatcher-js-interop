@@ -29,9 +29,6 @@ jobs:
     build:
         runs-on: ${{ matrix.os }}
         container: ${{ matrix.container }}
-        env:
-            CXX: clang++
-            CC: clang
         strategy:
             fail-fast: false
             matrix:
