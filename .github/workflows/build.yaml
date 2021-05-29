@@ -77,11 +77,13 @@ jobs:
                   curl -sL https://rpm.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
                   yum install -y https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
                   yum install -y gcc-c++ cmake make git python3 nodejs
+                  npm install --global yarn
             # Linux (MUSL) Dependencies
             - name: Dependencies (Linux/MUSL)
               if: contains(matrix.container, 'alpine')
               run: |
                   apk add build-base cmake make git python3 --update-cache
+                  npm install --global yarn
             # Windows / MacOS Dependencies
             - name: Dependencies (macOS, Windows)
               if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
