@@ -87,7 +87,7 @@ jobs:
               if: contains(matrix.container, 'alpine')
               run: |
                   apk add build-base cmake make git python3 --update-cache
-                  npm install --global yarn
+                  npm install --global yarn --force
             # Windows / MacOS Dependencies
             - name: Dependencies (macOS, Windows)
               if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
