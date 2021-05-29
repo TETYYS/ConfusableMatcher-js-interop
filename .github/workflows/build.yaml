@@ -135,7 +135,7 @@ jobs:
             - name: Prebuild
               if: github.ref == 'refs/heads/master' && matrix.prebuild
               run: |
-                  yarn prebuild --upload "${{ secrets.GITHUB_TOKEN }}"
+                  yarn build:cpp --upload "${{ secrets.GITHUB_TOKEN }}"
 
             - name: Publish
               if: github.ref == 'refs/heads/master'
