@@ -77,7 +77,7 @@ jobs:
               run: |
                   apt-get update -y
                   apt-get upgrade -y
-                  apt-get install -y curl build-essential gcc g++ cmake make git python3
+                  apt-get install -y curl build-essential clang cmake make git python3
                   curl -fsSL https://deb.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
                   apt-get install -y nodejs
                   npm install --global yarn
