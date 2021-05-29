@@ -35,14 +35,14 @@ jobs:
                 include:
                     # Linux (GLIBC)
                     - os: ubuntu-20.04
-                      container: centos:7
+                      container: ubuntu:20.04
                       nodejs_version: 12
                       prebuild: true
                     - os: ubuntu-20.04
-                      container: centos:7
+                      container: ubuntu:20.04
                       nodejs_version: 14
                     - os: ubuntu-20.04
-                      container: centos:7
+                      container: ubuntu:20.04
                       nodejs_version: 16
                     # Linux (MUSL)
                     - os: ubuntu-20.04
@@ -72,7 +72,7 @@ jobs:
         steps:
             # Linux (GLIBC) Dependencies
             - name: Dependencies (Linux/GLIBC)
-              if: contains(matrix.container, 'centos')
+              if: contains(matrix.container, 'ubuntu')
               run: |
                   curl -sL https://rpm.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
                   yum install -y https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
