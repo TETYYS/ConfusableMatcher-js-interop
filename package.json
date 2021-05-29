@@ -47,7 +47,7 @@
     "scripts": {
         "install": "prebuild-install || yon build:cpp",
         "build:ts": "tsc -b tsconfig.build.json",
-        "build:cpp": "prebuild --backend cmake-js --verbose --runtime napi --include-regex '\\.(node|so)$'",
+        "build:cpp": "prebuild --backend cmake-js --verbose --runtime napi --include-regex \"\\.(node|so)$\"",
         "clean": "rimraf build coverage prebuilds",
         "test": "jest --verbose --passWithNoTests",
         "test:watch": "yarn test --watchAll",
