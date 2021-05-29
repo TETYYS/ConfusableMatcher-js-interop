@@ -1,4 +1,3 @@
-// test build
 export type Mapping = [key: string, value: string];
 
 export enum EReturnStatus {
