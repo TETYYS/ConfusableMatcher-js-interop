@@ -157,7 +157,7 @@ describe('Unit Tests', () => {
                 matchRepeating: false,
                 startFromEnd: false,
                 startIndex: 0,
-                timeoutNs: 100_000,
+                timeoutNs: 10_000_000,
             });
             expect(r.status).toEqual(EReturnStatus.MATCH);
             expect(r.start == 0 || r.start == 1).toBeTruthy();
@@ -210,7 +210,7 @@ describe('Unit Tests', () => {
                 matchRepeating: false,
                 startFromEnd: false,
                 startIndex: 0,
-                timeoutNs: 100_000,
+                timeoutNs: 10_000_000,
             });
             expect(r.status).toEqual(EReturnStatus.MATCH);
             expect(r.start).toEqual(0);
@@ -223,7 +223,7 @@ describe('Unit Tests', () => {
                     matchRepeating: true,
                     startFromEnd: false,
                     startIndex: 0,
-                    timeoutNs: 200_000,
+                    timeoutNs: 20_000_000,
                 }
             );
             expect(r.status).toEqual(EReturnStatus.MATCH);
@@ -247,7 +247,7 @@ describe('Unit Tests', () => {
                 matchRepeating: true,
                 startFromEnd: false,
                 startIndex: 0,
-                timeoutNs: 100_000,
+                timeoutNs: 1_000_000,
             });
             expect(r.status).toEqual(EReturnStatus.NO_MATCH);
         });
@@ -327,7 +327,7 @@ describe('Unit Tests', () => {
                 matchRepeating: true,
                 startFromEnd: false,
                 startIndex: 0,
-                timeoutNs: 100_00000,
+                timeoutNs: 10_000_000,
             });
             expect(r.status).toEqual(EReturnStatus.NO_MATCH);
         });
