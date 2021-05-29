@@ -44,6 +44,7 @@ jobs:
                     - os: ubuntu-20.04
                       container: ubuntu:20.04
                       nodejs_version: 16
+                      checks: true
                     # Linux (MUSL)
                     - os: ubuntu-20.04
                       container: node:12-alpine3.12
@@ -109,12 +110,15 @@ jobs:
               run: yarn install
 
             - name: Lint
+              if: matrix.checks
               run: yarn lint
 
             - name: Format
+              if: matrix.checks
               run: yarn format
 
             - name: Spelling
+              if: matrix.checks
               run: yarn spelling
 
             - name: Build
