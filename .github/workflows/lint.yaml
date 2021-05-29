@@ -48,14 +48,6 @@ jobs:
                   rm package.json
                   mv out.tmp package.json
 
-            - name: Add Yarn to $PATH
-              id: yarn-cache-dir-path
-              run: |
-                  yarn config set prefix $(yarn cache dir)
-                  echo $(yarn global bin) >> $GITHUB_PATH
-                  yarn config set global-folder $(yarn cache dir)
-                  echo "::set-output name=dir::$(yarn cache dir)"
-
             - name: Restore ESLint
               uses: actions/cache@v2
               id: yarn-cache-eslint
