@@ -76,7 +76,7 @@ jobs:
               run: |
                   apt-get update -y
                   apt-get upgrade -y
-                  apt-get install -y curl build-essential clang cmake make git python3
+                  apt-get install -y curl build-essential clang cmake make git python3 jq
                   curl -fsSL https://deb.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
                   apt-get install -y nodejs
                   npm install --global yarn
@@ -86,7 +86,7 @@ jobs:
             - name: Dependencies (Linux/MUSL)
               if: contains(matrix.container, 'alpine')
               run: |
-                  apk add build-base cmake make git python3 --update-cache
+                  apk add build-base cmake make git python3 jq --update-cache
                   npm install --global yarn --force
             # Windows / MacOS Dependencies
             - name: Dependencies (macOS, Windows)
@@ -106,9 +106,22 @@ jobs:
               run: |
                   chown root.root .
 
-            - name: Install Dependencies
+            - name: Remove Install Command
               run: |
-                  yarn install
+                  jq 'del(.scripts.install)' package.json > out.tmp
+                  rm package.json
+                  mv out.tmp package.json
+
+            - name: Restore Dependencies
+              uses: actions/cache@v2
+              id: yarn-cache
+              with:
+                  key: ${{ runner.os }}-build
+                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+
+            - name: Install Dependencies
+              if: steps.yarn-cache.outputs.cache-hit != 'true'
+              run: yarn
 
             - name: Build
               run: |
