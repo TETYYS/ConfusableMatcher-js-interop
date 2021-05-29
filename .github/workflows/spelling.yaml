@@ -1,0 +1,54 @@
+name: spelling
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+
+jobs:
+    cspell:
+        runs-on: ubuntu-20.04
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Git Diff
+              id: diff
+              run: |
+                  if [ $GITHUB_BASE_REF ]; then
+                      # Pull Request
+                      export FETCH_TARGET="$GITHUB_BASE_REF"
+                      export DIFF_TARGET="origin/$GITHUB_BASE_REF"
+                  else
+                      # Push
+                      export FETCH_TARGET="${{ github.event.before }}"
+                      export DIFF_TARGET="${{ github.event.before }}"
+                  fi
+                  git fetch origin $FETCH_TARGET --depth=1
+                  export DIFF=$(git diff --diff-filter=ACMR --name-only $DIFF_TARGET $GITHUB_SHA | grep -E --line-buffered "\.([jt]sx?|md)$")
+                  echo "$DIFF"
+                  export CLEAN_DIFF=$(echo "$DIFF" | sed -e 's/^/.\//' | sed ':a;N;$!ba;s/\n/ /g')
+                  echo "::set-output name=diff::$CLEAN_DIFF"
+                  echo "::set-output name=has_diffs::$(test -n "$DIFF" && echo true || echo false)"
+
+            - name: Add Yarn to $PATH
+              id: yarn-cache-dir-path
+              run: |
+                  yarn config set prefix $(yarn cache dir)
+                  echo $(yarn global bin) >> $GITHUB_PATH
+                  yarn config set global-folder $(yarn cache dir)
+                  echo "::set-output name=dir::$(yarn cache dir)"
+
+            - name: Restore cSpell
+              uses: actions/cache@v2
+              id: yarn-cache
+              with:
+                  key: ${{ runner.os }}-cspell
+                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+
+            - name: Install cSpell
+              if: steps.yarn-cache.outputs.cache-hit != 'true'
+              run: yarn global add cspell
+
+            - name: Run cSpell
+              if: steps.diff.outputs.has_diffs == 'true'
+              run: cspell --no-must-find-files -c .cspell.json ${{ steps.diff.outputs.diff }}

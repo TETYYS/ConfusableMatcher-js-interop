@@ -44,7 +44,6 @@ jobs:
                     - os: ubuntu-20.04
                       container: ubuntu:20.04
                       nodejs_version: 16
-                      checks: true
                     # Linux (MUSL)
                     - os: ubuntu-20.04
                       container: node:12-alpine3.12
@@ -104,22 +103,12 @@ jobs:
 
             - name: CHOWN Container Volume
               if: matrix.container
-              run: chown root.root .
+              run: |
+                  chown root.root .
 
             - name: Install Dependencies
-              run: yarn install
-
-            - name: Lint
-              if: matrix.checks
-              run: yarn lint
-
-            - name: Format
-              if: matrix.checks
-              run: yarn format
-
-            - name: Spelling
-              if: matrix.checks
-              run: yarn spelling
+              run: |
+                  yarn install
 
             - name: Build
               run: |
@@ -127,7 +116,8 @@ jobs:
                   yarn build:cpp
 
             - name: Test
-              run: yarn test
+              run: |
+                  yarn test
 
             - name: Prebuild
               if: github.ref == 'refs/heads/master' && matrix.prebuild
