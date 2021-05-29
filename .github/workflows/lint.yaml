@@ -48,12 +48,31 @@ jobs:
                   rm package.json
                   mv out.tmp package.json
 
+            - name: Add Yarn to $PATH
+              id: yarn-cache-dir-path
+              run: |
+                  yarn config set prefix $(yarn cache dir)
+                  echo $(yarn global bin) >> $GITHUB_PATH
+                  yarn config set global-folder $(yarn cache dir)
+                  echo "::set-output name=dir::$(yarn cache dir)"
+
+            - name: Restore ESLint
+              uses: actions/cache@v2
+              id: yarn-cache-eslint
+              with:
+                  key: ${{ runner.os }}-eslint
+                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+
+            - name: Install ESLint
+              if: steps.yarn-cache-eslint.outputs.cache-hit != 'true'
+              run: yarn global add eslint
+
             - name: Restore Dependencies
               uses: actions/cache@v2
               id: yarn-cache
               with:
                   key: ${{ runner.os }}-lint
-                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                  path: node_modules
 
             - name: Install Dependencies
               if: steps.yarn-cache.outputs.cache-hit != 'true'
