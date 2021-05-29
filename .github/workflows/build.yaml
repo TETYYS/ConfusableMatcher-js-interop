@@ -117,7 +117,7 @@ jobs:
               id: yarn-cache
               with:
                   key: ${{ runner.os }}-build
-                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                  path: node_modules
 
             - name: Install Dependencies
               if: steps.yarn-cache.outputs.cache-hit != 'true'
