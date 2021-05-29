@@ -6,6 +6,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project (confusablematcher-js-interop-native)
 include_directories(${CMAKE_JS_INC})
 
+add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+if(MSVC)
+	string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+endif()
+
 # Include ConfusableMatcher
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/ConfusableMatcher)
 
