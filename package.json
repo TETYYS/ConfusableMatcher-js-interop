@@ -1,7 +1,7 @@
 {
     "name": "confusablematcher-js-interop",
     "description": "TypeScript NAPI Interop for ConfusableMatcher.",
-    "version": "4.0.0",
+    "version": "4.0.2",
     "license": "MIT",
     "contributors": [
         "TETYYS",
@@ -21,7 +21,12 @@
         "!src/ConfusableMatcher/**/*.git*"
     ],
     "engines": {
-        "node": ">=14.0.0"
+        "node": ">=12.0.0"
+    },
+    "binary": {
+        "napi_versions": [
+            3
+        ]
     },
     "repository": {
         "type": "git",
@@ -39,11 +44,15 @@
         "gyp",
         "native"
     ],
+    "config": {
+        "runtime": "napi",
+        "target": 3
+    },
     "scripts": {
-        "install": "cmake-js compile",
-        "build": "tsc -b tsconfig.build.json",
-        "clean": "tsc -b tsconfig.build.json --clean",
-        "postclean": "rimraf build coverage",
+        "install": "prebuild-install || yon build:cpp",
+        "build:ts": "tsc -b tsconfig.build.json",
+        "build:cpp": "prebuild --backend cmake-js --verbose --runtime napi --include-regex \"\\.(node|so|dylib|dll)$\"",
+        "clean": "rimraf build coverage prebuilds",
         "test": "jest --verbose --passWithNoTests",
         "test:watch": "yarn test --watchAll",
         "test:coverage": "yarn test --coverage",
@@ -60,7 +69,8 @@
     },
     "dependencies": {
         "cmake-js": "^6.1.0",
-        "node-addon-api": "^3.1.0"
+        "node-addon-api": "^3.1.0",
+        "prebuild-install": "^6.1.2"
     },
     "devDependencies": {
         "@types/benchmark": "^2.1.0",
@@ -84,11 +94,13 @@
         "jest": "^26.6.3",
         "lint-staged": "^10.5.4",
         "microtime": "^3.0.0",
+        "prebuild": "^10.0.1",
         "prettier": "^2.2.1",
         "rimraf": "^3.0.2",
         "ts-jest": "^26.5.5",
         "ts-node": "^9.1.1",
         "ts-node-dev": "^1.1.6",
-        "typescript": "^4.2.4"
+        "typescript": "^4.2.4",
+        "yarn-or-npm": "^3.0.1"
     }
 }

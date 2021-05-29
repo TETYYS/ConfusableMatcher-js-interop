@@ -6,6 +6,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project (confusablematcher-js-interop-native)
 include_directories(${CMAKE_JS_INC})
 
+add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+if(MSVC)
+	string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+endif()
+
 # Include ConfusableMatcher
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/ConfusableMatcher)
 
@@ -16,13 +22,17 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} ConfusableMatcher)
 
 # Define NAPI Version
-add_definitions(-DNAPI_VERSION=3)
+add_compile_definitions(NAPI_VERSION=${napi_build_version})
 
 # Include NAA Headers
-execute_process(COMMAND node -p "require('node-addon-api').include"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        OUTPUT_VARIABLE NODE_ADDON_API_DIR
-        )
+execute_process(
+    COMMAND
+        node -p "require('node-addon-api').include"
+        WORKING_DIRECTORY
+        ${PROJECT_SOURCE_DIR}
+        OUTPUT_VARIABLE
+        NODE_ADDON_API_DIR
+)
 string(REGEX REPLACE "[\r\n\"]" "" NODE_ADDON_API_DIR ${NODE_ADDON_API_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${NODE_ADDON_API_DIR})
 
