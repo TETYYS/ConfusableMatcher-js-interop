@@ -8,7 +8,18 @@ on:
             - .github/workflows/build.yaml
             # TypeScript
             - tsconfig*
-            # Depdendencies
+            # Dependencies
+            - package.json
+            - yarn.lock
+    pull_request:
+        paths:
+            # Source
+            - src/**
+            # Workflow
+            - .github/workflows/build.yaml
+            # TypeScript
+            - tsconfig*
+            # Dependencies
             - package.json
             - yarn.lock
 
@@ -35,7 +46,6 @@ jobs:
                   key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
             - name: Install Dependencies
-              # if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: yarn install
 
             - name: Lint
