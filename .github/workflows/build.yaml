@@ -75,7 +75,6 @@ jobs:
               if: contains(matrix.container, 'ubuntu')
               run: |
                   curl -sL https://rpm.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
-                  yum install -y https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
                   yum install -y gcc-c++ cmake make git python3 nodejs
                   npm install --global yarn
             # Linux (MUSL) Dependencies
