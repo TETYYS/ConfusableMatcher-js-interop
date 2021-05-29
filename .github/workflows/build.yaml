@@ -76,29 +76,18 @@ jobs:
               run: |
                   curl -sL https://rpm.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
                   yum install -y https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
-                  yum install -y gcc-c++ cmake git python3 nodejs
+                  yum install -y gcc-c++ cmake make git python3 nodejs
             # Linux (MUSL) Dependencies
             - name: Dependencies (Linux/MUSL)
               if: contains(matrix.container, 'alpine')
               run: |
-                  apk add build-base git python3 --update-cache
+                  apk add build-base cmake make git python3 --update-cache
             # Windows / MacOS Dependencies
             - name: Dependencies (macOS, Windows)
               if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
               uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.nodejs_version }}
-
-            # Debug Info
-            - name: Print Versions
-              run: |
-                  echo "Node version: $(node -v)"
-                  echo "NPM version: $(npm -v)"
-                  echo "Yarn version: $(yarn -v)"
-                  git --version
-                  python3 --version
-                  cmake --version
-                  make --version
 
             - name: Checkout Latest Commit
               uses: actions/checkout@v2
@@ -109,12 +98,6 @@ jobs:
             - name: CHOWN Container Volume
               if: matrix.container
               run: chown root.root .
-
-            - name: Restore Dependencies
-              uses: actions/cache@v2
-              with:
-                  key: ${{ matrix.os }}-${{ matrix.container }}-${{ hashFiles('yarn.lock') }}
-                  path: node_modules
 
             - name: Install Dependencies
               run: yarn install
