@@ -75,7 +75,7 @@ jobs:
               if: contains(matrix.container, 'ubuntu')
               run: |
                   curl -sL https://rpm.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
-                  yum install -y gcc-c++ cmake make git python3 nodejs
+                  apt install -y gcc-c++ cmake make git python3 nodejs
                   npm install --global yarn
             # Linux (MUSL) Dependencies
             - name: Dependencies (Linux/MUSL)
