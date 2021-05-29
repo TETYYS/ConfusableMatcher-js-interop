@@ -44,14 +44,12 @@ jobs:
                       nodejs_version: 16
                     # Linux (MUSL)
                     - os: ubuntu-20.04
-                      container: node:12-alpine3.11
+                      container: node:12-alpine3.12
                       prebuild: true
-                    - os: ubuntu-20.04
-                      container: node:14-alpine3.11
                     - os: ubuntu-20.04
                       container: node:14-alpine3.13
                     - os: ubuntu-20.04
-                      container: node:16-alpine3.11
+                      container: node:16-alpine3.13
                     # MacOS
                     - os: macos-10.15
                       nodejs_version: 12
