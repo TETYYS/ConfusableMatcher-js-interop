@@ -75,6 +75,7 @@ jobs:
               if: contains(matrix.container, 'centos')
               run: |
                   curl -sL https://rpm.nodesource.com/setup_${{ matrix.nodejs_version }}.x | bash -
+                  yum install -y https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
                   yum install -y gcc-c++ cmake git python3 nodejs
             # Linux (MUSL) Dependencies
             - name: Dependencies (Linux/MUSL)
@@ -87,6 +88,17 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.nodejs_version }}
+
+            # Debug Info
+            - name: Print Versions
+              run: |
+                  echo "Node version: $(node -v)"
+                  echo "NPM version: $(npm -v)"
+                  echo "Yarn version: $(yarn -v)"
+                  git --version
+                  python3 --version
+                  cmake --version
+                  make --version
 
             - name: Checkout Latest Commit
               uses: actions/checkout@v2
