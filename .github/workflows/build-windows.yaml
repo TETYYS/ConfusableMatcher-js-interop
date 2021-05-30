@@ -1,0 +1,91 @@
+name: build-windows
+on:
+    push:
+        branches:
+            - 'master'
+        paths:
+            # Source
+            - src/**
+            # Workflow
+            - ${{ github.action_path }}
+            # TypeScript
+            - tsconfig*
+            # Dependencies
+            - package.json
+            - yarn.lock
+    pull_request:
+        paths:
+            # Source
+            - src/**
+            # Workflow
+            - ${{ github.action_path }}
+            # TypeScript
+            - tsconfig*
+            # Dependencies
+            - package.json
+            - yarn.lock
+
+jobs:
+    build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - node: 12
+                      os: windows-2016
+                    - node: 14
+                      os: windows-2016
+                    - node: 15
+                      os: windows-2019
+                    - node: 16
+                      os: windows-2019
+
+        steps:
+            - name: Checkout Latest Commit
+              uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+                  fetch-depth: 1
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2.1.5
+              with:
+                  node-version: ${{ matrix.node }}
+
+            - name: Remove Install Command
+              run: |
+                  mv package.json package-original.json
+                  jq 'del(.scripts.install)' package-original.json > package.json
+
+            - name: Restore Dependencies
+              uses: actions/cache@v2
+              id: yarn-cache
+              with:
+                  key: ${{ runner.os }}-${{ github.workflow }}
+                  path: node_modules
+
+            - name: Install Dependencies
+              if: steps.yarn-cache.outputs.cache-hit != 'true'
+              run: |
+                  yarn config set unsafe-perm true
+                  yarn install
+
+            - name: Restore Install Command
+              run: |
+                  rm package.json
+                  mv package-original.json package.json
+
+            - name: Build
+              run: |
+                  yarn build:ts
+                  yarn build:cpp
+
+            - name: Test
+              run: |
+                  yarn test
+
+            - name: Upload Build
+              if: github.ref == 'refs/heads/master'
+              run: |
+                  yarn build:cpp --upload "${{ secrets.GITHUB_TOKEN }}"
