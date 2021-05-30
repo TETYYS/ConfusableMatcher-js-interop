@@ -1,7 +1,7 @@
 {
     "name": "confusablematcher-js-interop",
     "description": "TypeScript NAPI Interop for ConfusableMatcher.",
-    "version": "4.0.2",
+    "version": "4.3.0",
     "license": "MIT",
     "contributors": [
         "TETYYS",
@@ -15,10 +15,12 @@
         "CMakeLists.txt",
         "build/src",
         "!build/src/ConfusableMatcher",
-        "src/*.cpp",
-        "src/*.h",
-        "src/ConfusableMatcher",
-        "!src/ConfusableMatcher/**/*.git*"
+        "src",
+        "!src/benchmark",
+        "!src/examples",
+        "!src/ConfusableMatcher/bin",
+        "!src/ConfusableMatcher/CMakeFiles",
+        "!src/ConfusableMatcher/sparsehash/build"
     ],
     "engines": {
         "node": ">=12.0.0"

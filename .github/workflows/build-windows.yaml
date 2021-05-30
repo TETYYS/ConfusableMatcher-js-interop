@@ -34,12 +34,16 @@ jobs:
                 include:
                     - node: 12
                       os: windows-2016
+                      prebuild: true
                     - node: 14
                       os: windows-2016
+                      prebuild: false
                     - node: 15
                       os: windows-2019
+                      prebuild: false
                     - node: 16
                       os: windows-2019
+                      prebuild: false
 
         steps:
             - name: Checkout Latest Commit
@@ -78,14 +82,13 @@ jobs:
 
             - name: Build
               run: |
-                  yarn build:ts
                   yarn build:cpp
-
+                  yarn build:ts
             - name: Test
               run: |
                   yarn test
 
             - name: Upload Build
-              if: github.ref == 'refs/heads/master'
+              if: github.ref == 'refs/heads/master' && matrix.prebuild
               run: |
                   yarn build:cpp --upload "${{ secrets.GITHUB_TOKEN }}"
