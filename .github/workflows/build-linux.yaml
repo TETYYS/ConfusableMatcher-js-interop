@@ -48,7 +48,7 @@ jobs:
         steps:
             - name: Install System Dependencies
               run: |
-                  apt-get install -y ${{ matrix.gcc }} ${{ matrix.gpp }}
+                  sudo apt-get install -y ${{ matrix.gcc }} ${{ matrix.gpp }}
               env:
                   DEBIAN_FRONTEND: noninteractive
 
