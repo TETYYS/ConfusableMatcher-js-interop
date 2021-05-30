@@ -7,7 +7,7 @@ on:
             # Source
             - src/**
             # Workflow
-            - ${{ github.action_path }}
+            - .github/workflows/build-linux.yaml
             # TypeScript
             - tsconfig*
             # Dependencies
@@ -18,7 +18,7 @@ on:
             # Source
             - src/**
             # Workflow
-            - ${{ github.action_path }}
+            - .github/workflows/build-linux.yaml
             # TypeScript
             - tsconfig*
             # Dependencies
