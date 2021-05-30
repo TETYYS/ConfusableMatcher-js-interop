@@ -1,0 +1,97 @@
+name: build-alpine
+on:
+    push:
+        branches:
+            - 'master'
+        paths:
+            # Source
+            - src/**
+            # Workflow
+            - ${{ github.action_path }}
+            # TypeScript
+            - tsconfig*
+            # Dependencies
+            - package.json
+            - yarn.lock
+    pull_request:
+        paths:
+            # Source
+            - src/**
+            # Workflow
+            - ${{ github.action_path }}
+            # TypeScript
+            - tsconfig*
+            # Dependencies
+            - package.json
+            - yarn.lock
+
+jobs:
+    build:
+        runs-on: ubuntu-20.04
+        container:
+            image: node:${{ matrix.node }}-alpine${{ matrix.alpine }}
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - node: 12
+                      alpine: '3.9'
+                    - node: 14
+                      alpine: '3.10'
+                    - node: 15
+                      alpine: '3.10'
+                    - node: 16
+                      alpine: '3.11'
+
+        steps:
+            - name: Install System Dependencies
+              run: |
+                  apk add --no-cache python3 cmake make git gcc g++ jq
+
+            - name: Checkout Latest Commit
+              uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+                  fetch-depth: 1
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2.1.5
+              with:
+                  node-version: ${{ matrix.node }}
+
+            - name: Remove Install Command
+              run: |
+                  mv package.json package-original.json
+                  jq 'del(.scripts.install)' package-original.json > package.json
+
+            - name: Restore Dependencies
+              uses: actions/cache@v2
+              id: yarn-cache
+              with:
+                  key: ${{ runner.os }}-${{ github.workflow }}
+                  path: node_modules
+
+            - name: Install Dependencies
+              if: steps.yarn-cache.outputs.cache-hit != 'true'
+              run: |
+                  yarn config set unsafe-perm true
+                  yarn install
+
+            - name: Restore Install Command
+              run: |
+                  rm package.json
+                  mv package-original.json package.json
+
+            - name: Build
+              run: |
+                  yarn build:ts
+                  yarn build:cpp
+
+            - name: Test
+              run: |
+                  yarn test
+
+            - name: Upload Build
+              if: github.ref == 'refs/heads/master'
+              run: |
+                  yarn build:cpp --upload "${{ secrets.GITHUB_TOKEN }}"
