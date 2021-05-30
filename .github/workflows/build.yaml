@@ -108,9 +108,8 @@ jobs:
 
             - name: Remove Install Command
               run: |
-                  jq 'del(.scripts.install)' package.json > out.tmp
-                  rm package.json
-                  mv out.tmp package.json
+                  mv package.json package-original.json
+                  jq 'del(.scripts.install)' package-original.json > package.json
 
             - name: Restore Dependencies
               uses: actions/cache@v2
@@ -122,6 +121,11 @@ jobs:
             - name: Install Dependencies
               if: steps.yarn-cache.outputs.cache-hit != 'true'
               run: yarn
+
+            - name: Restore Install Command
+              run: |
+                  rm package.json
+                  mv package-original.json package.json
 
             - name: Build
               run: |
