@@ -44,6 +44,10 @@
         "gyp",
         "native"
     ],
+    "config": {
+        "runtime": "napi",
+        "target": 3
+    },
     "scripts": {
         "install": "prebuild-install || yon build:cpp",
         "build:ts": "tsc -b tsconfig.build.json",
