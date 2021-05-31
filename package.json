@@ -20,6 +20,11 @@
         "!src/examples",
         "!src/ConfusableMatcher/bin",
         "!src/ConfusableMatcher/CMakeFiles",
+        "!src/ConfusableMatcher/CMakeLists.txt",
+        "!src/ConfusableMatcher/UnitTests",
+        "!src/ConfusableMatcher/Fuzzing",
+        "!src/ConfusableMatcher/Export.*",
+        "!src/ConfusableMatcher/**/.git*",
         "!src/ConfusableMatcher/sparsehash/build"
     ],
     "engines": {
