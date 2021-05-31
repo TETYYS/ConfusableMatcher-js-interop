@@ -10,7 +10,8 @@
         "CHANGELOG.md",
         "yarn.lock",
         ".*rc.js",
-        "**/*.json"
+        "**/*.json",
+        "**/CMakeLists.txt"
     ],
     "dictionaries": ["typescript", "softwareTerms", "node", "en_US", "npm", "misc", "filetypes"],
     "ignoreRegExpList": [
