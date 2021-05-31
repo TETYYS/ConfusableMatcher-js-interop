@@ -7,27 +7,38 @@ on:
             - package.json
 
 jobs:
-    build:
+    publish:
         runs-on: ubuntu-20.04
         steps:
+            - name: Check Release
+              id: release
+              run: |
+                  MESSAGE="${{ github.event.head_commit.message }}"
+                  IS_RELEASE=`echo "${MESSAGE}" | grep -qP "^v\d+\.\d+\.\d+\S*$" && echo true || echo false`
+                  echo "::set-output name=is_release::${IS_RELEASE}"
+
             - name: Checkout Latest Commit
+              if: steps.release.outputs.is_release == 'true'
               uses: actions/checkout@v2
               with:
                   submodules: recursive
                   fetch-depth: 1
 
             - name: Setup Node.js
+              if: steps.release.outputs.is_release == 'true'
               uses: actions/setup-node@v2.1.5
               with:
                   registry-url: 'https://registry.npmjs.org'
                   always-auth: true
 
             - name: Remove Install Command
+              if: steps.release.outputs.is_release == 'true'
               run: |
                   mv package.json package-original.json
                   jq 'del(.scripts.install)' package-original.json > package.json
 
             - name: Restore Dependencies
+              if: steps.release.outputs.is_release == 'true'
               uses: actions/cache@v2
               id: yarn-cache
               with:
@@ -35,24 +46,29 @@ jobs:
                   path: node_modules
 
             - name: Install Dependencies
-              if: steps.yarn-cache.outputs.cache-hit != 'true'
+              if: steps.release.outputs.is_release == 'true' && steps.yarn-cache.outputs.cache-hit != 'true'
               run: |
                   yarn
 
             - name: Restore Install Command
+              if: steps.release.outputs.is_release == 'true'
               run: |
                   rm package.json
                   mv package-original.json package.json
 
             - name: Build
+              if: steps.release.outputs.is_release == 'true'
               run: |
                   yarn build:cpp
                   yarn build:ts
+
             - name: Test
+              if: steps.release.outputs.is_release == 'true'
               run: |
                   yarn test
 
             - name: Publish
+              if: steps.release.outputs.is_release == 'true'
               run: |
                   yarn publish --non-interactive --verbose
               env:
