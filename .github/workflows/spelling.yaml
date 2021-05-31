@@ -31,6 +31,7 @@ jobs:
                   echo "::set-output name=has_diffs::$(test -n "$DIFF" && echo true || echo false)"
 
             - name: Add Yarn to $PATH
+              if: steps.diff.outputs.has_diffs == 'true'
               id: yarn-cache-dir-path
               run: |
                   yarn config set prefix $(yarn cache dir)
@@ -39,6 +40,7 @@ jobs:
                   echo "::set-output name=dir::$(yarn cache dir)"
 
             - name: Restore cSpell
+              if: steps.diff.outputs.has_diffs == 'true'
               uses: actions/cache@v2
               id: yarn-cache
               with:
@@ -46,7 +48,7 @@ jobs:
                   path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
 
             - name: Install cSpell
-              if: steps.yarn-cache.outputs.cache-hit != 'true'
+              if: steps.diff.outputs.has_diffs == 'true' && steps.yarn-cache.outputs.cache-hit != 'true'
               run: yarn global add cspell
 
             - name: Run cSpell
