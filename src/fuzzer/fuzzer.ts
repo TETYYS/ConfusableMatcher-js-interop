@@ -1,3 +1,5 @@
+import SegfaultHandler from 'segfault-handler';
+
 import { ConfusableMatcher } from '../wrapper';
 /**
  * Maps should be an array of objects with key/value fields.
@@ -8,12 +10,13 @@ import Maps from './resources/maps.json';
  */
 import Skips from './resources/skips.json';
 
+/**
+ * Print debug logs for SEGFAULTs
+ */
+SegfaultHandler.registerHandler('crash.log');
+
 console.log(`Loaded ${Maps.length} Maps`);
 console.log(`Loaded ${Skips.length} Skips`);
-
-process.once('SIGSEGV', (signal) => {
-    console.error(signal);
-});
 
 /**
  * Maps
@@ -30,7 +33,7 @@ for (let i = 0; i < Maps.length; i++) {
     }
 
     console.log(`Trying Map ${i}: '${key}' -> '${value}'`);
-    new ConfusableMatcher([[key, value]]);
+    new ConfusableMatcher([[key, value]], [], false);
 }
 console.log('Maps Success!');
 
@@ -49,6 +52,6 @@ for (let i = 0; i < Skips.length; i++) {
     }
 
     console.log(`Trying Skip ${i}: '${value}'`);
-    new ConfusableMatcher([], [value]);
+    new ConfusableMatcher([], [value], false);
 }
 console.log('Skips Success!');
