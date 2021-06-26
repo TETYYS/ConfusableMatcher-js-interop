@@ -46,7 +46,7 @@ const SKIP_INDEX_SKIPS = new Set<number>([
 console.log('Testing Skips');
 for (let i = 0; i < Skips.length; i++) {
     const { value } = Skips[i];
-    if (MAP_INDEX_SKIPS.has(i)) {
+    if (SKIP_INDEX_SKIPS.has(i)) {
         console.log(`Skipping ${i}: '${value}'`);
         continue;
     }
