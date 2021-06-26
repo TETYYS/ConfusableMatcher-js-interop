@@ -47,6 +47,7 @@ let classExport: IConfusableMatcherProptotype;
 
 const ADDON_PATHS = [
     '../Release/confusablematcher-js-interop-native',
+    '../build/Debug/confusablematcher-js-interop-native',
     '../build/Release/confusablematcher-js-interop-native',
 ];
 for (const path of ADDON_PATHS) {

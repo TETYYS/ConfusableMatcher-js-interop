@@ -60,6 +60,7 @@
         "install": "prebuild-install || yon build:cpp",
         "build:ts": "tsc -b tsconfig.build.json",
         "build:cpp": "prebuild --backend cmake-js --verbose --runtime napi",
+        "build:cpp:debug": "rm -rf prebuilds && prebuild --backend cmake-js --verbose --runtime napi --debug",
         "clean": "rimraf build coverage prebuilds src/ConfusableMatcher/sparsehash/build",
         "test": "jest --verbose --passWithNoTests",
         "test:watch": "yarn test --watchAll",
