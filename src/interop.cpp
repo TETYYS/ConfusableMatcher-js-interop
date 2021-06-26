@@ -27,9 +27,6 @@ ConfusableMatcherNapiInterop::ConfusableMatcherNapiInterop(const Napi::CallbackI
 {
     Napi::Env env = info.Env();
 
-    /**
-     * Mappings
-     */
     std::vector<std::pair<std::string, std::string>> mapVector;
     Napi::Array mapArray = info[0].As<Napi::Array>();
     for (uint32_t x = 0; x < mapArray.Length(); x++)
@@ -41,9 +38,6 @@ ConfusableMatcherNapiInterop::ConfusableMatcherNapiInterop(const Napi::CallbackI
         mapVector.push_back(kvPair);
     }
 
-    /**
-     * Skips
-     */
     std::unordered_set<std::string> skipsSet;
     Napi::Array skipsArray = info[1].As<Napi::Array>();
     for (uint32_t x = 0; x < skipsArray.Length(); x++)
@@ -51,9 +45,6 @@ ConfusableMatcherNapiInterop::ConfusableMatcherNapiInterop(const Napi::CallbackI
         skipsSet.insert(skipsArray.Get(x).ToString().Utf8Value());
     }
 
-    /**
-     * Default Values
-     */
     bool addDefaults = info[2].ToBoolean();
 
     try
