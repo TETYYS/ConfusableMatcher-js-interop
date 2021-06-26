@@ -30,3 +30,4 @@ coverage
 # build output
 build
 prebuilds
+src/fuzzer/resources/*.json
