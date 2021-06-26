@@ -350,6 +350,7 @@ Please PR your reported time and hardware.
 
 | Processor                 | Memory                                         | Version | #indexOf() Performance                  | #indexOfSync() Performance               |
 | ------------------------- | ---------------------------------------------- | ------- | --------------------------------------- | ---------------------------------------- |
+| AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 4.6.0   | 16,084 ops/sec ±1.83% (78 runs sampled) | 237,149 ops/sec ±0.42% (93 runs sampled) |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 4.5.0   | 14,664 ops/sec ±0.78% (87 runs sampled) | 239,525 ops/sec ±0.47% (96 runs sampled) |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 4.4.0   | 14,686 ops/sec ±0.77% (85 runs sampled) | 240,802 ops/sec ±0.62% (95 runs sampled) |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 4.3.0   | 14,794 ops/sec ±0.70% (85 runs sampled) | 240,648 ops/sec ±0.36% (94 runs sampled) |
