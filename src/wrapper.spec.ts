@@ -918,6 +918,18 @@ describe('Unit Tests', () => {
             expect(r.start).toEqual(7);
             expect(r.size).toEqual(3);
         });
+
+        test('Test46', () => {
+            const m = new ConfusableMatcher([], [], true);
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+                timeoutNs: 1_000_000,
+            };
+
+            const r = m.indexOfSync('AABBB', 'AAB', opts);
+            expect(r.status).toEqual(EReturnStatus.MATCH);
+        });
     });
 
     describe('Pre-Computed', () => {
