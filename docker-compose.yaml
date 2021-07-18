@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+    profile:
+        build:
+            context: .
+        command: sh -c "sudo 0x --kernel-tracing --kernel-tracing-debug --tree-debug -- node  --interpreted-frames-native-stack --perf-basic-prof-only-functions build/src/benchmark/index.js"
+        cap_add:
+            - SYS_ADMIN
