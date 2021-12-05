@@ -3,6 +3,10 @@ import Benchmark from 'benchmark';
 
 import { ConfusableMatcher } from '../';
 import * as indexOf from './benchs/indexOf';
+import * as indexOfDebugFailures from './benchs/indexOfDebugFailures';
+import * as indexOfDebugFailuresEx from './benchs/indexOfDebugFailuresEx';
+import * as indexOfDebugFailuresExSync from './benchs/indexOfDebugFailuresExSync';
+import * as indexOfDebugFailuresSync from './benchs/indexOfDebugFailuresSync';
 import * as indexOfStrPosPointers from './benchs/indexOfStrPosPointers';
 import * as indexOfSync from './benchs/indexOfSync';
 import * as indexOfSyncStrPosPointers from './benchs/indexOfSyncStrPosPointers';
@@ -26,6 +30,10 @@ const matcher = new ConfusableMatcher();
     indexOfStrPosPointers.configure,
     indexOfSync.configure,
     indexOfSyncStrPosPointers.configure,
+    indexOfDebugFailures.configure,
+    indexOfDebugFailuresEx.configure,
+    indexOfDebugFailuresExSync.configure,
+    indexOfDebugFailuresSync.configure,
 ].forEach((fn) => fn(suite, matcher));
 console.log('Running benchmark...');
 suite.run({ async: true });
