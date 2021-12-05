@@ -26,6 +26,10 @@ This library exports a wrapper class bundled with TypeScript declarations that a
         -   [2.1.17. lastIndexOf(input, needle, options): Promise<IResult>](#2117-lastindexofinput-needle-options-promiseiresult)
         -   [2.1.18. containsSync(input, needle, options): boolean](#2118-containssyncinput-needle-options-boolean)
         -   [2.1.19. contains(input, needle, options?): Promise<boolean>](#2119-containsinput-needle-options-promiseboolean)
+        -   [2.1.20. indexOfDebugFailuresSync(input, needle, options?): string[]](#2120-indexofdebugfailuressyncinput-needle-options-string)
+        -   [2.1.21. indexOfDebugFailures(input, needle, options?): Promise<string[]>](#2121-indexofdebugfailuresinput-needle-options-promisestring)
+        -   [2.1.22. indexOfDebugFailuresExSync(input, needle, options?): IDebugFailureResult](#2122-indexofdebugfailuresexsyncinput-needle-options-idebugfailureresult)
+        -   [2.1.23. indexOfDebugFailuresEx(input, needle, options?): Promise<IDebugFailureResult>](#2123-indexofdebugfailuresexinput-needle-options-promiseidebugfailureresult)
 -   [3. Development](#3-development)
     -   [3.1. Testing](#31-testing)
     -   [3.2. Benchmarks](#32-benchmarks)
@@ -303,6 +307,58 @@ containsSync(input: string, needle: string, options?: IIndexOfOptions): boolean
  * @returns A Promise that resolves to true if the `needle` is found inside `input`.
  */
 contains(input: string, needle: string, options?: IIndexOfOptions): Promise<boolean>
+```
+
+#### 2.1.20. indexOfDebugFailuresSync(input, needle, options?): string[]
+
+```ts
+/**
+ * @description Searches for the first occurrence of `needle` in `input` with debugging enabled.
+ * @param input The string to search.
+ * @param needle The string to look for in `input`.
+ * @param options An optional object containing options in the search.
+ * @returns An array of strings containing failure debugging reasons.
+ */
+indexOfDebugFailuresSync(input: string, needle: string, options?: Partial<IIndexOfOptions>): string[]
+```
+
+#### 2.1.21. indexOfDebugFailures(input, needle, options?): Promise<string[]>
+
+```ts
+/**
+ * @description Searches for the first occurrence of `needle` in `input` with debugging enabled.
+ * @param input The string to search.
+ * @param needle The string to look for in `input`.
+ * @param options An optional object containing options in the search.
+ * @returns An array of strings containing failure debugging reasons.
+ */
+indexOfDebugFailures(input: string, needle: string, options?: Partial<IIndexOfOptions>): Promise<string[]>
+```
+
+#### 2.1.22. indexOfDebugFailuresExSync(input, needle, options?): IDebugFailureResult
+
+```ts
+/**
+ * @description Searches for the first occurrence of `needle` in `input` with debugging enabled.
+ * @param input The string to search.
+ * @param needle The string to look for in `input`.
+ * @param options An optional object containing options in the search.
+ * @returns An object containing match information.
+ */
+indexOfDebugFailuresExSync(input: string, needle: string, options?: Partial<IIndexOfOptions>): IDebugFailureResult
+```
+
+#### 2.1.23. indexOfDebugFailuresEx(input, needle, options?): Promise<IDebugFailureResult>
+
+```ts
+/**
+ * @description Searches for the first occurrence of `needle` in `input` with debugging enabled.
+ * @param input The string to search.
+ * @param needle The string to look for in `input`.
+ * @param options An optional object containing options in the search.
+ * @returns A Promise that resolves to an object containing match information.
+ */
+indexOfDebugFailuresEx(input: string, needle: string, options?: Partial<IIndexOfOptions>): Promise<IDebugFailureResult>
 ```
 
 ## 3. Development

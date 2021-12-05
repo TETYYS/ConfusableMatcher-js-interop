@@ -36,6 +36,8 @@ add_library(${PROJECT_NAME} SHARED
     "src/ConfusableMatcher/Config.h"
     "src/ConfusableMatcher/Shared.h"
     "src/ConfusableMatcher/ConfusableMatcherData.cpp"
+    "src/ConfusableMatcher/Debugging.h"
+    "src/ConfusableMatcher/MatchingState.h"
     ${CMAKE_JS_SRC}
 )
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} ${CMAKE_THREAD_LIBS_INIT})

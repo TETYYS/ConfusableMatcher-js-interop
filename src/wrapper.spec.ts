@@ -1,6 +1,6 @@
 /* cSpell: disable */
 import type { IIndexOfOptions, Mapping } from './binding';
-import { EReturnStatus } from './binding';
+import { EDebugFailureReason, EReturnStatus } from './binding';
 import { ConfusableMatcher } from './wrapper';
 
 describe('Unit Tests', () => {
@@ -954,6 +954,66 @@ describe('Unit Tests', () => {
             expect(r.start).toEqual(1);
             expect(r.size).toEqual(8);
             m.freeStringPosPointers(needlePtr);
+        });
+    });
+
+    describe('Debug', () => {
+        it('Should produce debug matches', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+            };
+            const map: Mapping[] = [
+                ['N', '/B/'],
+                ['I', '/'],
+            ];
+            const m = new ConfusableMatcher(map, []);
+            const input = 'I/B/AM';
+            const needle = 'INAN';
+            const { failures } = m.indexOfDebugFailuresExSync(input, needle, opts);
+
+            let x = 0;
+            expect(failures[x].inPos).toEqual(5);
+            expect(failures[x].containsPos).toEqual(3);
+            expect(failures[x++].reason).toEqual(EDebugFailureReason.NO_NEW_PATHS);
+
+            expect(failures[x].inPos).toEqual(2);
+            expect(failures[x].containsPos).toEqual(1);
+            expect(failures[x++].reason).toEqual(EDebugFailureReason.NO_PATH);
+
+            expect(failures[x].inPos).toEqual(2);
+            expect(failures[x].containsPos).toEqual(1);
+            expect(failures[x++].reason).toEqual(EDebugFailureReason.NO_PATH);
+
+            expect(failures[x].inPos).toEqual(4);
+            expect(failures[x].containsPos).toEqual(1);
+            expect(failures[x++].reason).toEqual(EDebugFailureReason.NO_PATH);
+
+            expect(failures[x].inPos).toEqual(6);
+            expect(failures[x].containsPos).toEqual(0);
+            expect(failures[x++].reason).toEqual(EDebugFailureReason.NO_PATH);
+        });
+
+        it('Should produce failure debug strings', () => {
+            const opts: Partial<IIndexOfOptions> = {
+                matchOnWordBoundary: true,
+                matchRepeating: true,
+            };
+            const map: Mapping[] = [
+                ['N', '/B/'],
+                ['I', '/'],
+            ];
+            const m = new ConfusableMatcher(map, []);
+            const input = 'I/B/AM';
+            const needle = 'INAN';
+            const failures = m.indexOfDebugFailuresSync(input, needle, opts);
+
+            let x = 0;
+            expect('No new paths in input /AM̲ (5) comparing NAN̲ (3)').toEqual(failures[x++]);
+            expect('No path in input I/B̲/AM (2) comparing IN̲AN (1)').toEqual(failures[x++]);
+            expect('No path in input I/B̲/AM (2) comparing IN̲AN (1)').toEqual(failures[x++]);
+            expect('No path in input B/A̲M (4) comparing IN̲AN (1)').toEqual(failures[x++]);
+            expect('No path in input /AM ̲ (6) comparing I̲NAN (0)').toEqual(failures[x++]);
         });
     });
 });
