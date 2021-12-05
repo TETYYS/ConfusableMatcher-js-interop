@@ -14,6 +14,25 @@ export interface IResult {
     status: EReturnStatus;
 }
 
+export enum EDebugFailureReason {
+    NO_PATH = 0,
+    NO_NEW_PATHS = 1,
+    TIMEOUT = 2,
+    WORD_BOUNDARY_FAIL_START = 3,
+    WORD_BOUNDARY_FAIL_END = 4,
+}
+
+export interface IDebugFailure {
+    inPos: number;
+    containsPos: number;
+    reason: EDebugFailureReason;
+}
+
+export interface IDebugFailureResult {
+    result: IResult;
+    failures: IDebugFailure[];
+}
+
 export interface IIndexOfOptions {
     matchRepeating: boolean;
     startIndex: number;
@@ -32,6 +51,13 @@ export declare class ConfusableMatcherInstance {
     freeStringPosPointers(pointer: StrPosPointer): void;
     indexOf(input: string, needle: string, options?: IIndexOfOptions): IResult;
     indexOfAsync(callback: (result: IResult) => void, input: string, needle: string, options?: IIndexOfOptions): void;
+    indexOfDebugFailures(input: string, needle: string, options?: IIndexOfOptions): IDebugFailureResult;
+    indexOfDebugFailuresAsync(
+        callback: (result: IDebugFailureResult) => void,
+        input: string,
+        needle: string,
+        options?: IIndexOfOptions
+    ): void;
 }
 
 interface IConfusableMatcherProptotype {
