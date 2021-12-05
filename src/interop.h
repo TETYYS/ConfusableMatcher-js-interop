@@ -1,11 +1,10 @@
 #pragma once
 
-#include <napi.h>
 #include "ConfusableMatcher/ConfusableMatcher.h"
+#include <napi.h>
 
-class ConfusableMatcherNapiInterop : public Napi::ObjectWrap<ConfusableMatcherNapiInterop>
-{
-public:
+class ConfusableMatcherNapiInterop : public Napi::ObjectWrap<ConfusableMatcherNapiInterop> {
+  public:
     ConfusableMatcherNapiInterop(const Napi::CallbackInfo &);
     ~ConfusableMatcherNapiInterop();
 
@@ -14,27 +13,11 @@ public:
     Napi::Value freeStringPosPointers(const Napi::CallbackInfo &);
     Napi::Value indexOf(const Napi::CallbackInfo &);
     Napi::Value indexOfAsync(const Napi::CallbackInfo &);
+    Napi::Value indexOfDebugFailures(const Napi::CallbackInfo &);
+    Napi::Value indexOfDebugFailuresAsync(const Napi::CallbackInfo &);
 
     static Napi::Function GetClass(Napi::Env);
 
-private:
+  private:
     ConfusableMatcher *_instance;
-};
-
-class ConfusableMatcherIndexOfAsyncWorker : public Napi::AsyncWorker
-{
-public:
-    ConfusableMatcherIndexOfAsyncWorker(Napi::Function &callback, ConfusableMatcher *cm, std::string in, std::string needle, CMOptions opts);
-    virtual ~ConfusableMatcherIndexOfAsyncWorker(){};
-
-    void Execute() override;
-    void OnOK() override;
-
-    CMReturn result;
-
-private:
-    ConfusableMatcher *_cm;
-    std::string _in;
-    std::string _needle;
-    CMOptions _opts;
 };
