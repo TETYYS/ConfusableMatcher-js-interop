@@ -1,5 +1,13 @@
-import type { ConfusableMatcherInstance, IIndexOfOptions, IResult, Mapping, StrPosPointer } from './binding';
-import { ConfusableMatcherInterop, EReturnStatus } from './binding';
+import type {
+    ConfusableMatcherInstance,
+    IDebugFailure,
+    IDebugFailureResult,
+    IIndexOfOptions,
+    IResult,
+    Mapping,
+    StrPosPointer,
+} from './binding';
+import { ConfusableMatcherInterop, EDebugFailureReason, EReturnStatus } from './binding';
 
 const DEFAULT_OPTIONS: IIndexOfOptions = {
     matchOnWordBoundary: false,
@@ -189,6 +197,128 @@ export class ConfusableMatcher {
         this._instance.freeStringPosPointers(pointer);
     }
     //#endregion Pre-compute
+
+    //#region Debug
+    /**
+     * @description Searches for the first occurrence of `needle` in `input` with debugging enabled.
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns An array of strings containing failure debugging reasons.
+     */
+    public indexOfDebugFailuresSync(input: string, needle: string, options?: Partial<IIndexOfOptions>): string[] {
+        const { failures } = this.indexOfDebugFailuresExSync(input, needle, options);
+        return this._formatDebugFailures(input, needle, failures);
+    }
+
+    /**
+     * @description Searches for the first occurrence of `needle` in `input` with debugging enabled.
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns An array of strings containing failure debugging reasons.
+     */
+    public async indexOfDebugFailures(
+        input: string,
+        needle: string,
+        options?: Partial<IIndexOfOptions>
+    ): Promise<string[]> {
+        const { failures } = await this.indexOfDebugFailuresEx(input, needle, options);
+        return this._formatDebugFailures(input, needle, failures);
+    }
+
+    /**
+     * @description Searches for the first occurrence of `needle` in `input` with debugging enabled.
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns An object containing match information.
+     */
+    public indexOfDebugFailuresExSync(
+        input: string,
+        needle: string,
+        options?: Partial<IIndexOfOptions>
+    ): IDebugFailureResult {
+        let utf8: Buffer | undefined;
+
+        if (typeof options?.startIndex === 'number' && options.startIndex !== 0) {
+            utf8 = Buffer.from(input);
+            options.startIndex = utf8.toString('utf-8', 0, options.startIndex).length;
+        }
+
+        const value = this._instance.indexOfDebugFailures(input, needle, this._fillDefaultOptions(options));
+        const { result } = value;
+
+        if (result.start >= 0) {
+            if (!utf8) {
+                utf8 = Buffer.from(input);
+            }
+            const start = utf8.toString('utf-8', 0, result.start);
+            const size = utf8.toString('utf-8', result.start, result.start + result.size);
+
+            return {
+                ...value,
+                result: {
+                    size: size.length,
+                    start: start.length,
+                    status: result.status,
+                },
+            };
+        }
+
+        return value;
+    }
+
+    /**
+     * @description Searches for the first occurrence of `needle` in `input` with debugging enabled.
+     * @param input The string to search.
+     * @param needle The string to look for in `input`.
+     * @param options An optional object containing options in the search.
+     * @returns A Promise that resolves to an object containing match information.
+     */
+    public indexOfDebugFailuresEx(
+        input: string,
+        needle: string,
+        options?: Partial<IIndexOfOptions>
+    ): Promise<IDebugFailureResult> {
+        let utf8: Buffer | undefined;
+
+        if (typeof options?.startIndex === 'number' && options.startIndex !== 0) {
+            utf8 = Buffer.from(input);
+            options.startIndex = utf8.toString('utf-8', 0, options.startIndex).length;
+        }
+
+        return new Promise<IDebugFailureResult>((resolve) => {
+            this._instance.indexOfDebugFailuresAsync(
+                (value) => {
+                    const { result } = value;
+                    if (result.start >= 0) {
+                        if (!utf8) {
+                            utf8 = Buffer.from(input);
+                        }
+                        const start = utf8.toString('utf-8', 0, result.start);
+                        const size = utf8.toString('utf-8', result.start, result.start + result.size);
+
+                        resolve({
+                            ...value,
+                            result: {
+                                size: size.length,
+                                start: start.length,
+                                status: result.status,
+                            },
+                        });
+                        return;
+                    }
+
+                    resolve(value);
+                },
+                input,
+                needle,
+                this._fillDefaultOptions(options)
+            );
+        });
+    }
+    //#endregion Debug
 
     //#region Comparators
     /**
@@ -412,5 +542,73 @@ export class ConfusableMatcher {
      */
     private _fillDefaultOptions(options?: Partial<IIndexOfOptions>): IIndexOfOptions {
         return Object.assign<IIndexOfOptions, Partial<IIndexOfOptions> | undefined>({ ...DEFAULT_OPTIONS }, options);
+    }
+
+    /**
+     * @description Formats debug failure objects into strings.
+     */
+    private _formatDebugFailures(input: string, needle: string, debugFailures: IDebugFailure[]): string[] {
+        const formatted: string[] = [];
+
+        const UNDERLINE = '\u0332';
+        const FRAGMENT_LEN = 3;
+        const getReason = (failure: IDebugFailure, inFragment: string, needleFragment: string) => {
+            switch (failure.reason) {
+                case EDebugFailureReason.NO_PATH:
+                    return `No path in input ${inFragment} (${failure.inPos}) comparing ${needleFragment} (${failure.containsPos})`;
+
+                case EDebugFailureReason.NO_NEW_PATHS:
+                    return `No new paths in input ${inFragment} (${failure.inPos}) comparing ${needleFragment} (${failure.containsPos})`;
+
+                case EDebugFailureReason.TIMEOUT:
+                    return `Timeout in input ${inFragment} (${failure.inPos}) comparing ${needleFragment} (${failure.containsPos})`;
+
+                case EDebugFailureReason.WORD_BOUNDARY_FAIL_START:
+                    return `Word boundary failure at start of the match in input ${inFragment} (${failure.inPos}) comparing ${needleFragment} (${failure.containsPos})`;
+
+                case EDebugFailureReason.WORD_BOUNDARY_FAIL_END:
+                    return `Word boundary failure at end of the match in input ${inFragment} (${failure.inPos}) comparing ${needleFragment} (${failure.containsPos})`;
+            }
+        };
+
+        const inLength = Buffer.from(input).toString('utf-8').length;
+        const needleLength = Buffer.from(needle).toString('utf-8').length;
+
+        for (const failure of debugFailures) {
+            let inPos = failure.inPos + 1;
+            let inFragment: string;
+            if (inPos > inLength) {
+                inPos--;
+                inFragment = ''.concat(input.slice(Math.max(0, inPos - FRAGMENT_LEN), inPos), ' ', UNDERLINE);
+            } else {
+                inFragment = ''.concat(
+                    input.slice(Math.max(0, inPos - FRAGMENT_LEN), inPos),
+                    UNDERLINE,
+                    input.slice(inPos, Math.min(inLength, inPos + FRAGMENT_LEN))
+                );
+            }
+
+            let needlePos = failure.containsPos + 1;
+            let needleFragment: string;
+            if (needlePos > needleLength) {
+                needlePos--;
+                needleFragment = ''.concat(
+                    needle.slice(Math.max(0, needlePos - FRAGMENT_LEN), needlePos),
+                    ' ',
+                    UNDERLINE
+                );
+            } else {
+                needleFragment = ''.concat(
+                    needle.slice(Math.max(0, needlePos - FRAGMENT_LEN), needlePos),
+                    UNDERLINE,
+                    needle.slice(needlePos, Math.min(needleLength, needlePos + FRAGMENT_LEN))
+                );
+            }
+
+            const reason = getReason(failure, inFragment, needleFragment);
+            formatted.push(reason);
+        }
+
+        return formatted;
     }
 }
