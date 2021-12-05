@@ -4,35 +4,35 @@ This library exports a wrapper class bundled with TypeScript declarations that a
 
 <!-- TOC depthFrom:2 -->
 
--   [1. Installation](#1-installation)
--   [2. Usage](#2-usage)
-    -   [2.1. new ConfusableMatcher()](#21-new-confusablematcher)
-        -   [2.1.1. addMapping(key, value): void](#211-addmappingkey-value-void)
-        -   [2.1.2. addMappings(mappings): void](#212-addmappingsmappings-void)
-        -   [2.1.3. removeMapping(key, value): void](#213-removemappingkey-value-void)
-        -   [2.1.4. removeMappings(mappings): void](#214-removemappingsmappings-void)
-        -   [2.1.5. getMappings(): Mapping[]](#215-getmappings-mapping)
-        -   [2.1.6. getKeyMappings(value): string[]](#216-getkeymappingsvalue-string)
-        -   [2.1.7. addSkip(skip): void](#217-addskipskip-void)
-        -   [2.1.8. addSkips(skips): void](#218-addskipsskips-void)
-        -   [2.1.9. removeSkip(skip): void](#219-removeskipskip-void)
-        -   [2.1.10. removeSkips(skips): void](#2110-removeskipsskips-void)
-        -   [2.1.11. getSkips(): string[]](#2111-getskips-string)
-        -   [2.1.12. computeStringPosPointers(needle): number](#2112-computestringpospointersneedle-number)
-        -   [2.1.13. freeStringPosPointers(pointer): void](#2113-freestringpospointerspointer-void)
-        -   [2.1.14. indexOfSync(input, needle, options): IResult](#2114-indexofsyncinput-needle-options-iresult)
-        -   [2.1.15. indexOf(input, needle, options): Promise<IResult>](#2115-indexofinput-needle-options-promiseiresult)
-        -   [2.1.16. lastIndexOfSync(input, needle, options): IResult](#2116-lastindexofsyncinput-needle-options-iresult)
-        -   [2.1.17. lastIndexOf(input, needle, options): Promise<IResult>](#2117-lastindexofinput-needle-options-promiseiresult)
-        -   [2.1.18. containsSync(input, needle, options): boolean](#2118-containssyncinput-needle-options-boolean)
-        -   [2.1.19. contains(input, needle, options?): Promise<boolean>](#2119-containsinput-needle-options-promiseboolean)
-        -   [2.1.20. indexOfDebugFailuresSync(input, needle, options?): string[]](#2120-indexofdebugfailuressyncinput-needle-options-string)
-        -   [2.1.21. indexOfDebugFailures(input, needle, options?): Promise<string[]>](#2121-indexofdebugfailuresinput-needle-options-promisestring)
-        -   [2.1.22. indexOfDebugFailuresExSync(input, needle, options?): IDebugFailureResult](#2122-indexofdebugfailuresexsyncinput-needle-options-idebugfailureresult)
-        -   [2.1.23. indexOfDebugFailuresEx(input, needle, options?): Promise<IDebugFailureResult>](#2123-indexofdebugfailuresexinput-needle-options-promiseidebugfailureresult)
--   [3. Development](#3-development)
-    -   [3.1. Testing](#31-testing)
-    -   [3.2. Benchmarks](#32-benchmarks)
+- [1. Installation](#1-installation)
+- [2. Usage](#2-usage)
+    - [2.1. new ConfusableMatcher()](#21-new-confusablematcher)
+        - [2.1.1. addMapping(key, value): void](#211-addmappingkey-value-void)
+        - [2.1.2. addMappings(mappings): void](#212-addmappingsmappings-void)
+        - [2.1.3. removeMapping(key, value): void](#213-removemappingkey-value-void)
+        - [2.1.4. removeMappings(mappings): void](#214-removemappingsmappings-void)
+        - [2.1.5. getMappings(): Mapping[]](#215-getmappings-mapping)
+        - [2.1.6. getKeyMappings(value): string[]](#216-getkeymappingsvalue-string)
+        - [2.1.7. addSkip(skip): void](#217-addskipskip-void)
+        - [2.1.8. addSkips(skips): void](#218-addskipsskips-void)
+        - [2.1.9. removeSkip(skip): void](#219-removeskipskip-void)
+        - [2.1.10. removeSkips(skips): void](#2110-removeskipsskips-void)
+        - [2.1.11. getSkips(): string[]](#2111-getskips-string)
+        - [2.1.12. computeStringPosPointers(needle): number](#2112-computestringpospointersneedle-number)
+        - [2.1.13. freeStringPosPointers(pointer): void](#2113-freestringpospointerspointer-void)
+        - [2.1.14. indexOfSync(input, needle, options): IResult](#2114-indexofsyncinput-needle-options-iresult)
+        - [2.1.15. indexOf(input, needle, options): Promise<IResult>](#2115-indexofinput-needle-options-promiseiresult)
+        - [2.1.16. lastIndexOfSync(input, needle, options): IResult](#2116-lastindexofsyncinput-needle-options-iresult)
+        - [2.1.17. lastIndexOf(input, needle, options): Promise<IResult>](#2117-lastindexofinput-needle-options-promiseiresult)
+        - [2.1.18. containsSync(input, needle, options): boolean](#2118-containssyncinput-needle-options-boolean)
+        - [2.1.19. contains(input, needle, options?): Promise<boolean>](#2119-containsinput-needle-options-promiseboolean)
+        - [2.1.20. indexOfDebugFailuresSync(input, needle, options?): string[]](#2120-indexofdebugfailuressyncinput-needle-options-string)
+        - [2.1.21. indexOfDebugFailures(input, needle, options?): Promise<string[]>](#2121-indexofdebugfailuresinput-needle-options-promisestring)
+        - [2.1.22. indexOfDebugFailuresExSync(input, needle, options?): IDebugFailureResult](#2122-indexofdebugfailuresexsyncinput-needle-options-idebugfailureresult)
+        - [2.1.23. indexOfDebugFailuresEx(input, needle, options?): Promise<IDebugFailureResult>](#2123-indexofdebugfailuresexinput-needle-options-promiseidebugfailureresult)
+- [3. Development](#3-development)
+    - [3.1. Testing](#31-testing)
+    - [3.2. Benchmarks](#32-benchmarks)
 
 <!-- /TOC -->
 
@@ -406,6 +406,7 @@ Please PR your reported time and hardware.
 
 | Processor                 | Memory                                         | Version | #indexOf() Performance                  | #indexOfSync() Performance               |
 | ------------------------- | ---------------------------------------------- | ------- | --------------------------------------- | ---------------------------------------- |
+| AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 4.8.0   | 10,603 ops/sec ±1.04% (87 runs sampled) | 146,163 ops/sec ±0.15% (97 runs sampled) |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 4.7.1   | 15,639 ops/sec ±0.65% (83 runs sampled) | 246,712 ops/sec ±0.35% (96 runs sampled) |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 4.7.0   | 15,134 ops/sec ±0.84% (83 runs sampled) | 244,674 ops/sec ±0.41% (96 runs sampled) |
 | AMD Ryzen 9 3900X 12-Core | DDR4-3200MHz CL16-18-18-38 1.35V 64GB (4x16GB) | 4.6.0   | 16,084 ops/sec ±1.83% (78 runs sampled) | 237,149 ops/sec ±0.42% (93 runs sampled) |
