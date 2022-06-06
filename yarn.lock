@@ -1324,6 +1324,13 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
+axios@^0.21.1:
+  version "0.21.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
+  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+  dependencies:
+    follow-redirects "^1.14.0"
+
 babel-jest@^26.6.3:
   version "26.6.3"
   resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-26.6.3.tgz#d87d25cb0037577a0c89f82e5755c5d293c01056"
@@ -1759,10 +1766,12 @@ cliui@^6.0.0:
     wrap-ansi "^6.2.0"
 
 cmake-js@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/cmake-js/-/cmake-js-6.1.0.tgz#bec7381b58d454acee09d4fb0047153a005063a6"
-  integrity sha512-utmukLQftpgrCpGRCaHnkv4K27HZNNFqmBl4vnvccy0xp4c1erxjFU/Lq4wn5ngAhFZmpwBPQfoKWKThjSBiwg==
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/cmake-js/-/cmake-js-6.3.1.tgz#48da3a8f1dcf72d5d13c13ea7063e779307b2c5e"
+  integrity sha512-/nKLRMVhxCZh+sD3jAilpZyMWkfZLbYuGLlfNwDIBVjkGMgQEEyFLFRJC3tcO94ycuTBX7XjRaiqyEmFw9guVQ==
   dependencies:
+    axios "^0.21.1"
+    bluebird "^3"
     debug "^4"
     fs-extra "^5.0.0"
     is-iojs "^1.0.1"
@@ -1770,7 +1779,6 @@ cmake-js@^6.1.0:
     memory-stream "0"
     npmlog "^1.2.0"
     rc "^1.2.7"
-    request "^2.54.0"
     semver "^5.0.3"
     splitargs "0"
     tar "^4"
@@ -2898,6 +2906,11 @@ flatted@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.1.tgz#c4b489e80096d9df1dfc97c79871aea7c617c469"
   integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
+
+follow-redirects@^1.14.0:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
+  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
 
 for-in@^1.0.2:
   version "1.0.2"
