@@ -2464,12 +2464,13 @@ eslint-plugin-eslint-comments@^3.2.0:
     escape-string-regexp "^1.0.5"
     ignore "^5.0.5"
 
-eslint-plugin-eslint-plugin@^3.0.2:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-eslint-plugin/-/eslint-plugin-eslint-plugin-3.0.3.tgz#3356adec58bd4904f98001779f61eff5b7006ec8"
-  integrity sha512-vVNx9qexy0iQwqtOzzJPFAfC6j6i4L6QE//JqwJOnAC5aUHJA4yFQy56kX9JOJ2rx3iKlpTt3h/adErgbqU/SA==
+eslint-plugin-eslint-plugin@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-eslint-plugin/-/eslint-plugin-eslint-plugin-5.0.2.tgz#cc9389668b200134297914b2f9046a3cfb3f23f0"
+  integrity sha512-i1g9NpZXaBu3E+ufXHn9muW67PGDxxPpAVDUrAWWS9dG7y5wtxqEhnvookb+O+r2ByLjMJ+tyGizu5TyueBmbw==
   dependencies:
-    eslint-utils "^2.1.0"
+    eslint-utils "^3.0.0"
+    estraverse "^5.2.0"
 
 eslint-plugin-import@^2.22.1:
   version "2.23.4"
